@@ -1,0 +1,19 @@
+{
+  "name": "hogar",
+  "version": "1.0.0",
+  "description": "Gestión de Contribuyentes residentes y Caja H.A.L.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swapuruguay/hogar.git"
+  },
+  "author": "Walter Sosa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swapuruguay/hogar/issues"
+  },
+  "homepage": "https://github.com/swapuruguay/hogar#readme"
+}
