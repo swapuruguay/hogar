@@ -1,0 +1,24 @@
+<p>&nbsp;</p>
+<div class="row">
+  <div class="col-md-6">
+    <table class="table table-condensed table-striped table-bordered table-responsive" >
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th colspan="2"></th>
+      </tr>
+      {{#each contris}}
+        <tr>
+          <td>{{ nombre }}</td>
+          <td>{{ apellido }}</td>
+          <td class="text-center success" ><a href="/contribuyentes/editar/{{ id_contribuyente }}">
+
+<i class="fa fa-pencil" aria-hidden="true"></i>
+</a></td>
+          <td class="text-center danger" ><a href="/contribuyentes/eliminar/{{ id_contribuyente }}"><i class="fa fa-trash" aria-hidden="true"></i>
+</a></td>
+        </tr>
+      {{/each}}
+    </table>
+  </div>
+</div>
