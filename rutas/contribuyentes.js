@@ -15,9 +15,10 @@ router.use(formData.stream());
 // union body and files 
 router.use(formData.union());
 
-router.get('/', function(req, res) {
+router.get('/', async(function(req, res) {
+  
   res.render('index-contribuyentes')
-})
+}))
 
 router.get('/listar', async(function(req, res) {
   let db = new Bd()
@@ -41,6 +42,25 @@ router.get('/editar/:id', async(function(req, res) {
   let ciclos = await(db.getCiclos())
   db.disconnect()
   res.render('contribuyentes-edit', {contri: contri, ciclos: ciclos})
+
+}))
+
+router.get('/generar', function(req, res) {
+  res.render('cuotas-generar')
+})
+
+router.post('/generar', async(function(req, res) {
+  let db = new Bd()
+  let mes = req.body.mes
+  let anio = req.body.anio
+  let contris = await(db.getContribuyentes(' WHERE estado = 1'))
+  let fecha = new Date().toJSON().slice(0,10)
+  let filas = []
+  contris.forEach(function(el) {
+    filas.push([el.id_contribuyente, mes, anio, 0, fecha])
+  })
+  await(db.generarCuotas(filas))
+  res.send('Mes generado con éxito')
 
 }))
 

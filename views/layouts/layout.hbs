@@ -25,5 +25,31 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js"></script>
+  
+  <script>
+  let fgen = document.getElementById('form-generar')
+  if(fgen) {
+  fgen.addEventListener("submit", function(event){
+    event.preventDefault()
+    let result = document.getElementById('resultado')
+    result.classList.add('loader')
+    let formData = new FormData(fgen)
+    superagent
+    .post('/contribuyentes/generar')
+    .send(formData)
+    .end(function(err, res){
+     /* if(res.text == 'Ok') {*/
+    //  clearForm(fcli)
+    //  } else {
+        result.classList.remove('loader')
+        result.innerHTML = res.text
+    //  }
+    })
+
+    
+  });
+}
+  </script>
 </body>
 </html>

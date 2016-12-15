@@ -95,20 +95,94 @@ class Contribuyentes {
   }
 
   getByCiclo(ciclo) {
+    let connection = this.con
+    
+    let tarea = co.wrap(function * () {
+      let conn = yield connection
+      let contris = yield conn.query(`SELECT * FROM contribuyentes WHERE id_ciclo_fk = ${ciclo}`)
+      if(!contris) {
+        Promise.rejetc(new Error('Ocurrio un error'))
+      }
 
+      return Promise.resolve(contris)
+    })
+    return Promise.resolve(tarea())
+ 
   }
 
   getByCategoria(categoria) {
+    let connection = this.con
+    
+    let tarea = co.wrap(function * () {
+      let conn = yield connection
+      let contris = yield conn.query(`SELECT * FROM contribuyentes WHERE id_categoria_fk = ${categoria}`)
+      if(!contris) {
+        Promise.rejetc(new Error('Ocurrio un error'))
+      }
 
+      return Promise.resolve(contris)
+    })
+    return Promise.resolve(tarea())
   }
 
   saveContribuyente(contri) {
-   
+    
 
   }
 
   deleteContribuyente(contri) {
 
+  }
+
+  getCuotasPendientes(idContribuyente) {
+    let connection = this.con
+    
+    let tarea = co.wrap(function * () {
+      let conn = yield connection
+      let contris = yield conn.query(`SELECT * FROM cuotas WHERE estado = 0 AND id_contribuyente_fk = ${idContribuyente}`)
+      if(!contris) {
+        Promise.rejetc(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(contris)
+    })
+    return Promise.resolve(tarea())
+  }
+
+  getCuotas(mes, anio) {
+    let connection = this.con
+  
+    let tarea = co.wrap(function * () {
+      let conn = yield connection
+      let contris = yield conn.query(`SELECT * FROM cuotas WHERE mes = ${mes} AND anio = ${anio}`)
+      if(!contris) {
+        Promise.rejetc(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(contris)
+    })
+    return Promise.resolve(tarea())
+  }
+
+  getCuotasSinCobrar() {
+
+  }
+
+  generarCuotas(lista) {
+    
+    let connection = this.con
+    
+    let tarea = co.wrap(function * () {
+      let conn = yield connection
+      let sql = "INSERT INTO cuotas (id_contribuyente_fk, mes, anio, estado, fecha_emision) VALUES ?"
+      let result = yield conn.query(sql, [lista])
+      if(!result) {
+        Promise.rejetc(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(result)
+    })
+    return Promise.resolve(tarea())
   }
 
   

@@ -16,6 +16,7 @@ app.set('view engine', 'hbs')
 handleb.registerPartial('footer', fs.readFileSync(__dirname + '/views/partials/footer.hbs', 'utf8'))
 handleb.registerPartial('header', fs.readFileSync(__dirname + '/views/partials/header.hbs', 'utf8'))
 
+
 app.use(express.static(__dirname + '/public'))
 
 app.use(bodyParser.urlencoded({extended:false}))
@@ -32,6 +33,7 @@ const port = process.env.port || 5501
 app.use('/contribuyentes', contri)
 
 app.get('/', function(req, res) {
+  
   res.render('index')
 })
 
