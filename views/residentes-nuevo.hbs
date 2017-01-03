@@ -1,0 +1,96 @@
+<div class="container">
+  <h1>{{titulo}}</h1>
+  <p>&nbsp;</p>
+  <div class="row">
+   <form class="form-horizontal" id="form-residentes" >
+    
+     <div class="form-group">
+       <label for="nombre" class="col-sm-2 control-label">Nombre</label>
+       <div class="col-sm-4">
+         <input type="text" class="form-control" id="nombre" name="nombre">
+       </div>
+     </div>
+     <div class="form-group">
+       <label for="apellido" class="col-sm-2 control-label">Apellido</label>
+       <div class="col-sm-4">
+         <input type="text" class="form-control" id="apellido" name="apellido">
+       </div>
+     </div>
+     
+     <div class="form-group">
+       <label for="documento" class="col-sm-2 control-label">Documento</label>
+       <div class="col-sm-4">
+         <input type="text" class="form-control" id="documento" name="documento">
+       </div>
+     </div>
+     <div class="form-group">
+       <label for="nacimiento" class="col-sm-2 control-label">Fec. Nacimiento</label>
+       <div class="col-sm-4">
+         <input type="text" class="form-control" id="nacimiento" name="nacimiento">
+       </div>
+     </div>
+     <div class="form-group">
+       <label for="mutualista" class="col-sm-2 control-label">Mutualista</label>
+       <div class="col-sm-4">
+         <input type="text" class="form-control" id="mutualista" name="mutualista">
+       </div>
+     </div>
+     
+     <div class="form-group">
+       <label for="cuidados" class="col-sm-2 control-label">Serv. Acompañantes</label>
+       <div class="col-sm-4">
+         <input type="text" id="cuidados" name="cuidados" class="form-control" >
+       </div>
+    </div>
+
+    <div class="form-group">
+       <label for="ingreso" class="col-sm-2 control-label">Ingreso</label>
+       <div class="col-sm-4">
+         <input type="text" name="ingreso" id="ingreso" class="form-control" >
+       </div>
+    </div>
+    <fieldset id="campos">
+      <legend>Agregar Residente</legend>
+      <div class="form-group">
+          <div class="col-sm-6">
+            <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i>
+      </div>
+            <input type="text" class="form-control" id="referente" placeholder="Nombre y apellido">
+            <div class="input-group-addon"><i class="fa fa-phone-square" aria-hidden="true"></i>
+      </div>
+            <input type="text" class="form-control" id="celref" placeholder="Teléfono">
+         
+            </div>
+          </div>
+          <div class="col-sn-1">
+             <button type="button" class="btn" onclick="add()"><i class="fa fa-plus-circle" aria-hidden="true"></i>
+</button>
+          </div>
+        </div>
+    </fieldset>
+         
+     
+     <input type="submit" class="btn btn-default" value="Guardar">
+   </form>
+  </div>
+</div>
+<script>
+  function add() {
+    console.log('ok')
+    let nombre = document.getElementById('referente')
+    let tel = document.getElementById('celref')
+    let campos = document.getElementById('campos')
+    let eldiv = document.createElement('div')
+    eldiv.classList.add('col-sm-4')
+    let p = document.createElement('p')
+    p.classList.add('form-control-static')
+    let text = document.createTextNode(nombre.value + ' ' +tel.value)
+    p.appendChild(text)
+    eldiv.appendChild(p)
+    campos.appendChild(eldiv)
+    tel.value = ''
+    nombre.value = ''
+
+  }
+</script>

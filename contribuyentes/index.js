@@ -1,6 +1,6 @@
-const co = require('co')
-const mysql = require('promise-mysql')
-let config = require('../config')
+import co from 'co'
+import mysql from 'promise-mysql'
+const config = require('../config')
 
 class Contribuyentes {
 
@@ -188,4 +188,4 @@ class Contribuyentes {
   
 }
 
-module.exports = Contribuyentes
+export default Contribuyentes

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const hbs = require('express-handlebars')
 const handleb = require('handlebars')
 const contri = require('./rutas/contribuyentes')
+const resi = require('./rutas/residentes')
 const fs = require('fs')
 const app = express()
 
@@ -31,6 +32,7 @@ app.use(session({
 const port = process.env.port || 5501
 
 app.use('/contribuyentes', contri)
+app.use('/residentes', resi)
 
 app.get('/', function(req, res) {
   
