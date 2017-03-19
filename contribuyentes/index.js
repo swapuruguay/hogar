@@ -1,5 +1,5 @@
-import co from 'co'
-import mysql from 'promise-mysql'
+const co = require('co')
+const mysql = require('promise-mysql')
 const config = require('../config')
 
 class Contribuyentes {
@@ -20,33 +20,28 @@ class Contribuyentes {
     this.con = mysql.createConnection(options)
 
     let connection = this.con
-    let setup = co.wrap(function * () {
-      let  conn = yield connection
-      return conn
-    })
-    return Promise.resolve(setup())
+
+    return Promise.resolve(connection)
   }
 
-  disconnect() {
+  async disconnect() {
     let connection = this.con
-    let setup = co.wrap(function * () {
-      let conn = yield connection
+    let conn = await connection
       conn.destroy()
       return conn
-    })
-    return Promise.resolve(setup())
+      
   }
 
-  getContribuyentes(where, order) {
+  async getContribuyentes(where, order) {
     let cond = where || ''
     let orden = order || ''
-    
-    
+
+
     let connection = this.con
 
-    let task = co.wrap(function * () {
-      let conn = yield connection
-      let listContribuyentes = yield conn.query(`SELECT * FROM contribuyentes ${cond} ${orden}`)
+    //let task = co.wrap(function * () {
+      let conn = await connection
+      let listContribuyentes = await conn.query(`SELECT * FROM contribuyentes ${cond} ${orden}`)
 
       if(!listContribuyentes) {
         return Promise.reject(new Error(`Not found`))
@@ -54,9 +49,9 @@ class Contribuyentes {
 
       return Promise.resolve(listContribuyentes)
 
-    })
+  //  })
 
-    return Promise.resolve(task())
+    //return Promise.resolve(task())
 
   }
 
@@ -73,15 +68,14 @@ class Contribuyentes {
     return Promise.resolve(task())
   }
 
-  getContribuyente(id) {
-    
-    
-    
+  async getContribuyente(id) {
+
+
     let connection = this.con
 
-    let task = co.wrap(function * () {
-      let conn = yield connection
-      let contribuyente = yield conn.query(`SELECT * FROM contribuyentes WHERE id_contribuyente = ${id}`)
+
+      let conn = await connection
+      let contribuyente = await conn.query(`SELECT * FROM contribuyentes WHERE id_contribuyente = ${id}`)
 
       if(!contribuyente) {
         return Promise.reject(new Error(`Not found`))
@@ -89,44 +83,37 @@ class Contribuyentes {
 
       return Promise.resolve(contribuyente)
 
-    })
 
-    return Promise.resolve(task())
   }
 
-  getByCiclo(ciclo) {
+  async getByCiclo(ciclo) {
     let connection = this.con
-    
-    let tarea = co.wrap(function * () {
-      let conn = yield connection
-      let contris = yield conn.query(`SELECT * FROM contribuyentes WHERE id_ciclo_fk = ${ciclo}`)
+
+    let conn = await connection
+      let contris = await conn.query(`SELECT * FROM contribuyentes WHERE id_ciclo_fk = ${ciclo}`)
       if(!contris) {
         Promise.rejetc(new Error('Ocurrio un error'))
       }
 
       return Promise.resolve(contris)
-    })
-    return Promise.resolve(tarea())
- 
   }
 
-  getByCategoria(categoria) {
+  async getByCategoria(categoria) {
     let connection = this.con
-    
-    let tarea = co.wrap(function * () {
-      let conn = yield connection
-      let contris = yield conn.query(`SELECT * FROM contribuyentes WHERE id_categoria_fk = ${categoria}`)
+
+    let conn = await connection
+      let contris = await conn.query(`SELECT * FROM contribuyentes WHERE id_categoria_fk = ${categoria}`)
       if(!contris) {
         Promise.rejetc(new Error('Ocurrio un error'))
       }
 
       return Promise.resolve(contris)
-    })
-    return Promise.resolve(tarea())
+
+
   }
 
   saveContribuyente(contri) {
-    
+
 
   }
 
@@ -134,58 +121,68 @@ class Contribuyentes {
 
   }
 
-  getCuotasPendientes(idContribuyente) {
+  async getCuotasPendientes(idContribuyente) {
     let connection = this.con
-    
-    let tarea = co.wrap(function * () {
-      let conn = yield connection
-      let contris = yield conn.query(`SELECT * FROM cuotas WHERE estado = 0 AND id_contribuyente_fk = ${idContribuyente}`)
+
+    let conn = await connection
+      let contris =  await conn.query(`SELECT * FROM cuotas WHERE estado = 0 AND id_contribuyente_fk = ${idContribuyente}`)
       if(!contris) {
         Promise.rejetc(new Error('Ocurrio un error'))
       }
 
       return Promise.resolve(contris)
-    })
-    return Promise.resolve(tarea())
+
   }
 
-  getCuotas(mes, anio) {
+  async getCuotas(mes, anio) {
     let connection = this.con
-  
-    let tarea = co.wrap(function * () {
-      let conn = yield connection
-      let contris = yield conn.query(`SELECT * FROM cuotas WHERE mes = ${mes} AND anio = ${anio}`)
+
+
+      let conn = await connection
+      let contris = await conn.query(`SELECT * FROM cuotas WHERE mes = ${mes} AND anio = ${anio}`)
       if(!contris) {
         Promise.rejetc(new Error('Ocurrio un error'))
       }
 
       return Promise.resolve(contris)
-    })
-    return Promise.resolve(tarea())
+
   }
 
   getCuotasSinCobrar() {
 
   }
 
-  generarCuotas(lista) {
-    
+  async generarCli(lista) {
     let connection = this.con
-    
-    let tarea = co.wrap(function * () {
-      let conn = yield connection
-      let sql = "INSERT INTO cuotas (id_contribuyente_fk, mes, anio, estado, fecha_emision) VALUES ?"
-      let result = yield conn.query(sql, [lista])
+
+    let conn = await connection
+      let sql = 'INSERT INTO contribuyentes (nombre, apellido, domicilio, id_categoria_fk, id_ciclo_fk, mes_pago, estado, fecha_alta, telefono) VALUES ?'
+      let result = await conn.query(sql, [lista])
       if(!result) {
-        Promise.rejetc(new Error('Ocurrio un error'))
+        Promise.reject(new Error('Ocurrio un error'))
       }
 
       return Promise.resolve(result)
-    })
-    return Promise.resolve(tarea())
+
   }
 
-  
+  async generarCuotas(lista) {
+
+    let connection = this.con
+
+    let conn = await connection
+      let sql = "INSERT INTO cuotas (id_contribuyente_fk, mes, anio, estado, fecha_emision) VALUES ?"
+      let result = await conn.query(sql, [lista])
+      if(!result) {
+        Promise.reject(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(result)
+
+
+  }
+
+
 }
 
-export default Contribuyentes
+module.exports = Contribuyentes

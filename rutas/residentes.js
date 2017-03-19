@@ -5,7 +5,7 @@ const router = express.Router()
 const Bd = require('../contribuyentes')
 const config = require('../config')
 const formData = require('express-form-data')
-import co from 'co'
+const co = require('co')
 
 
 // parsing data with connect-multiparty. Result set on req.body and req.files 
@@ -25,4 +25,4 @@ router.get('/nuevo', (req, res) => {
   res.render('residentes-nuevo')
 })
 
-export default router
+ module.exports = router

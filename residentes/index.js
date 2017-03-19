@@ -45,7 +45,7 @@ class Residentes {
        let sql = "INSERT INTO cuotas (id_residente, nombre, apellido, documento, fecha_nacimiento, mutualista, cuidados, fecha_ingreso) VALUES ?"
       let result = yield conn.query(sql, residente)
       if(!result) {
-        Pomise.reject(new Error('Ocurrio un error))
+        Pomise.reject(new Error('Ocurrio un error'))
       }
       return Promise.resolve(result)
     })
