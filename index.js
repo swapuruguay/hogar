@@ -35,7 +35,7 @@ app.use('/contribuyentes', contri)
 app.use('/residentes', resi)
 
 app.get('/', function(req, res) {
-  
+
   res.render('index')
 })
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const express = require('express')
 const router = express.Router()
 const Bd = require('../contribuyentes')
@@ -46,7 +48,7 @@ router.get('/prueba', async function  (req, res) {
     contris.push(['Contri'+i, 'Apell'+i, 'Domicilio'+i, 1, 1, 0, 1, fecha, 'telefono'+i])
   }
 
-  console.log(contris[0])
+//  console.log(contris[0])
 
  await db.generarCli(contris)
   //res.send('Mes generado con éxito')
@@ -70,16 +72,37 @@ router.get('/generar', function(req, res) {
   res.render('cuotas-generar')
 })
 
+router.get('/preimprimimr', function(req, res) {
+  res.render('cuotas-imprimir')
+})
+
+router.post('/imprimir', async function (req, res) {
+  let db = new Bd()
+  let {mes, anio} = req.body
+
+  let cuotas = await db.getCuotas(mes, anio)
+  res.send(cuotas)
+
+})
+
 router.post('/generar', async function  (req, res) {
   let db = new Bd()
-  let mes = req.body.mes
-  let anio = req.body.anio
+  let {mes, anio} = req.body
   let contris = await db.getContribuyentes(' WHERE estado = 1')
   let fecha = new Date().toJSON().slice(0,10)
   let filas = []
-  contris.forEach(function(el) {
-    filas.push([el.id_contribuyente, mes, anio, 0, fecha])
-  })
+  /*
+  await Promise.all(contris.forEach(async function(el) {
+    let cat = (await db.getCategoria(el.id_categoria_fk))[0]
+    filas.push([el.id_contribuyente, mes, anio, cat.importe, 0, fecha])
+
+  }))
+  */
+  for(let c of contris) {
+    let cat = (await db.getCategoria(c.id_categoria_fk))[0]
+    filas.push([c.id_contribuyente, mes, anio, cat.importe, 0, fecha])
+  }
+  //console.log(filas)
   await db.generarCuotas(filas)
   res.send('Mes generado con éxito')
 

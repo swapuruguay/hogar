@@ -1,4 +1,5 @@
-const co = require('co')
+'use strict'
+
 const mysql = require('promise-mysql')
 const config = require('../config')
 
@@ -29,7 +30,7 @@ class Contribuyentes {
     let conn = await connection
       conn.destroy()
       return conn
-      
+
   }
 
   async getContribuyentes(where, order) {
@@ -55,17 +56,36 @@ class Contribuyentes {
 
   }
 
-  getCiclos() {
+  async getCategoria(id) {
+
+
     let connection = this.con
-    let task = co.wrap(function * () {
-      let conn = yield connection
+
+    //let task = co.wrap(function * () {
+      let conn = await connection
+      let cate = await conn.query(`SELECT * FROM categorias WHERE id_categoria = ${id}`)
+
+      if(!cate) {
+        return Promise.reject(new Error(`Not found`))
+      }
+
+      return Promise.resolve(cate)
+
+  //  })
+
+    //return Promise.resolve(task())
+
+  }
+
+  async getCiclos() {
+    let connection = this.con
+    let conn = await connection
       let ciclos = conn.query('SELECT * FROM ciclos')
       if(!ciclos) {
         return Promise.reject(new Error('Not found'))
       }
       return Promise.resolve(ciclos)
-    })
-    return Promise.resolve(task())
+
   }
 
   async getContribuyente(id) {
@@ -171,7 +191,7 @@ class Contribuyentes {
     let connection = this.con
 
     let conn = await connection
-      let sql = "INSERT INTO cuotas (id_contribuyente_fk, mes, anio, estado, fecha_emision) VALUES ?"
+      let sql = "INSERT INTO cuotas (id_contribuyente_fk, mes, anio, importe, estado, fecha_emision) VALUES ?"
       let result = await conn.query(sql, [lista])
       if(!result) {
         Promise.reject(new Error('Ocurrio un error'))

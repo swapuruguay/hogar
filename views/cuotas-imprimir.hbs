@@ -1,0 +1,26 @@
+var doc = new jsPDF();
+
+   /* console.log(res.columns)
+    let columns = [{title: 'ID', dataKey: 'id'}, {title:'Nombre', dataKey: 'nombre'},{ title:'Apellido', dataKey:'apellido'}]
+    let rows = [{id: 1, nombre: 'Walter', apellido: 'Sosa'},
+                {id: 2, nombre: 'Fiorella', apellido: 'Sosa'}]
+    doc.autoTable(columns, rows, {
+    styles: {fillColor: [100, 255, 255]},
+    columnStyles: {
+        id: {fillColor: 0}
+    }});*/
+
+  let medida = 150
+  let via = ['Cliente', 'Archivo']
+for(let i = 0; i < 2; i++) {
+  doc.setFontSize(8)
+  doc.setFontType('italic')
+  doc.setTextColor(0,0,255)
+  doc.text('Julio Automoviles', 10,10+medida*i)
+  doc.setTextColor(0,0,0)
+  doc.text(`${sucursal.domicilio} Telefax: ${sucursal.telefono}`, 10,15+medida*i)
+  doc.setFontSize(12)
+  doc.setFontType('bold')
+  doc.text('RECIBO DE SEÑA', 70,35+medida*i)
+  doc.setFontSize(10)
+  doc.setFontType('normal')
