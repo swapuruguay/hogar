@@ -68,32 +68,51 @@
 </button>
           </div>
         </div>
+        <ul id="respo">
+
+        </ul>
     </fieldset>
 
 
-     <input type="submit" class="btn btn-default" value="Guardar">
+     <button class="btn btn-default" type="button" onclick="enviar()">Guardar</button>
    </form>
   </div>
 </div>
 <script>
   function add() {
-    console.log('ok')
+
     let nombre = document.getElementById('referente')
     let tel = document.getElementById('celref')
-    let campos = document.getElementById('campos')
-    let eldiv = document.createElement('div')
-    eldiv.classList.add('col-sm-4')
-    let p = document.createElement('p')
-    p.classList.add('form-control-static')
+    let campos = document.getElementById('respo')
+    let eldiv = document.createElement('li')
+    //eldiv.classList.add('col-sm-4')
+    //let p = document.createElement('p')
+  //  p.classList.add('form-control-static')
     let text = document.createTextNode(nombre.value + ' ' +tel.value)
-    p.appendChild(text)
-    eldiv.appendChild(p)
+    //p.appendChild(text)
+    eldiv.appendChild(text)
     campos.appendChild(eldiv)
     tel.value = ''
     nombre.value = ''
 
   }
 
-  
+  function enviar() {
+    let lista = document.getElementById('respo')
+    let lis = lista.querySelectorAll('li');
+
+    let arreglo = []
+    lis.forEach(function(li) {
+      arreglo.push(li.textContent)
+    })
+    arreglo = arreglo.map(function(el) {
+      let valores = el.split(' ')
+      el = {nombre: valores[0], celular: valores[1]}
+      return el
+    })
+
+    console.log(arreglo[0].celular)
+  }
+
 
 </script>
