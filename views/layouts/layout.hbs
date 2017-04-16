@@ -6,27 +6,28 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/app.css">
-  
+
   <title>Hogar de Ancianos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js"></script>
 </head>
 <body>
-  
+
   <div class="wrapper">
 
     {{> header }}
-   
+
     <div class="container">
-      
+
       {{{ body }}}
     </div>
     <div class="push"></div>
   </div>
     {{> footer }}
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js"></script>
-  
+
+
+
   <script>
   let fgen = document.getElementById('form-generar')
   if(fgen) {
@@ -47,7 +48,7 @@
     //  }
     })
 
-    
+
   });
 }
   </script>

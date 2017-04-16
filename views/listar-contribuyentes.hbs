@@ -1,6 +1,22 @@
 <p>&nbsp;</p>
 <div class="row">
+  <form class="form-horizontal">
+
+    <div class="form-group">
+        <div class="col-sm-6">
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></div>
+            <input type="text" name="campo" id="campo" onkeyup="buscar()" class="form-control" placeholder="Buscar">
+          </div>
+        </div>
+
+      </div>
+  </form>
+  <p>&nbsp;</p>
   <div class="col-md-6">
+    <div id="result">
+
+
     <table class="table table-condensed table-striped table-bordered table-responsive" >
       <tr>
         <th>Nombre</th>
@@ -20,5 +36,38 @@
         </tr>
       {{/each}}
     </table>
+    </div>
   </div>
 </div>
+<script>
+  function buscar() {
+    let cadena = document.getElementById('campo').value
+    //console.log('OKK')
+      let result = document.getElementById('result')
+      result.classList.add('loader')
+      let formData = new FormData()
+      formData.append('texto', cadena)
+    superagent
+    .post('/contribuyentes/filtrar')
+    .send(formData)
+    .end(function(err, res){
+     /* if(res.text == 'Ok') {*/
+    //  clearForm(fcli)
+    //  } else {
+        result.classList.remove('loader')
+        let tabla = `<table class="table table-condensed table-striped table-bordered table-responsive"><tr><th>Nombre</th>
+                    <th>Apellido</th><th colspan="2"></th></tr>`
+                    res.body.contris.forEach(function (c) {
+                      tabla+= `<tr><td>${c.nombre}</td><td>${c.apellido}</td>
+                               <td class="text-center success" ><a href="/contribuyentes/editar/${c.id_contribuyente}"><i class="fa fa-pencil" aria-hidden="true"></i>
+                               </a></td>
+                                <td class="text-center success" ><a href="/contribuyentes/eliminar/${c.id_contribuyente}"><i class="fa fa-trash" aria-hidden="true"></i>
+                                </a></td></tr>`
+                    })
+                    tabla+= '</table>'
+
+                    result.innerHTML = tabla
+    //  }
+    })
+  }
+</script>

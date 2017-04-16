@@ -48,11 +48,19 @@ router.get('/prueba', async function  (req, res) {
     contris.push(['Contri'+i, 'Apell'+i, 'Domicilio'+i, 1, 1, 0, 1, fecha, 'telefono'+i])
   }
 
-//  console.log(contris[0])
+  //  console.log(contris[0])
 
  await db.generarCli(contris)
   //res.send('Mes generado con éxito')
   res.end()
+})
+
+router.post('/filtrar', async function (req, res) {
+  let db = new Bd()
+  let texto = req.body.texto
+  let contris = await db.getContribuyentes(`WHERE apellido LIKE '${texto}%'`, 'ORDER BY apellido, nombre')
+  console.log(contris)
+  res.send({ contris })
 })
 
 router.get('/editar/:id', async function  (req, res) {
