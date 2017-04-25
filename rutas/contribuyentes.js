@@ -63,6 +63,19 @@ router.post('/filtrar', async function (req, res) {
   res.send({ contris })
 })
 
+router.post('/add', async function(req, res) {
+  let db = new Bd()
+  let contri = {}
+  contri = req.body
+  contri.id_cliclo_fk
+  delete contri.ciclo
+  delete contri.id
+  //console.log(contri)
+  let result = await db.saveContribuyente(contri)
+  res.send(result)
+  db.disconnect()
+})
+
 router.get('/editar/:id', async function  (req, res) {
   let db = new Bd()
   let id = req.params.id
@@ -74,6 +87,20 @@ router.get('/editar/:id', async function  (req, res) {
   db.disconnect()
   res.render('contribuyentes-edit', {contri: contri, ciclos: ciclos})
 
+})
+
+router.post('/editar', async function(req, res) {
+  let db = new Bd()
+  let contri = {}
+  contri = req.body
+  contri.id_contribuyente = contri.id
+  contri.id_cliclo_fk
+  delete contri.ciclo
+  delete contri.id
+  console.log(contri)
+  let result = await db.saveContribuyente(contri)
+  res.send(result)
+  db.disconnect()
 })
 
 router.get('/generar', function(req, res) {

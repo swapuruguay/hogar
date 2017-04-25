@@ -132,8 +132,23 @@ class Contribuyentes {
 
   }
 
-  saveContribuyente(contri) {
+  async saveContribuyente(contri) {
+    let connection = this.con
 
+    let conn = await connection
+    let id = contri.id_contribuyente || 0
+    let sql = ''
+    if(id === 0) {
+      sql = 'INSERT INTO contribuyentes SET ?'
+    } else {
+      sql = `UPDATE contribuyentes SET ? WHERE id_contribuyente = ${id}`
+    }
+      let result = await conn.query(sql, contri)
+      if(!result) {
+        Promise.reject(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(result)
 
   }
 

@@ -29,28 +29,90 @@
 
 
   <script>
-  let fgen = document.getElementById('form-generar')
+  let fgen = document.getElementById('form-ingresar-contribuyentes')
+  let fedit = document.getElementById('form-editar-contribuyentes')
   if(fgen) {
   fgen.addEventListener("submit", function(event){
     event.preventDefault()
     let result = document.getElementById('resultado')
-    result.classList.add('loader')
+    //result.classList.add('loader')
     let formData = new FormData(fgen)
     superagent
-    .post('/contribuyentes/generar')
+    .post('/contribuyentes/add')
     .send(formData)
     .end(function(err, res){
      /* if(res.text == 'Ok') {*/
-    //  clearForm(fcli)
+      clearForm(fgen)
     //  } else {
-        result.classList.remove('loader')
-        result.innerHTML = res.text
+        //result.classList.remove('loader')
+        //result.innerHTML = res.text
     //  }
     })
 
 
   });
 }
+
+if(fedit) {
+  fedit.addEventListener("submit", function(event){
+    event.preventDefault()
+    let result = document.getElementById('resultado')
+  //  result.classList.add('loader')
+    let formData = new FormData(fedit)
+    superagent
+    .post('/contribuyentes/editar')
+    .send(formData)
+    .end(function(err, res){
+     /* if(res.text == 'Ok') {*/
+      clearForm(fedit)
+    //  } else {
+    //    result.classList.remove('loader')
+    //    result.innerHTML = res.text
+    //  }
+    })
+
+
+  })
+}
+
+  function clearForm(myFormElement) {
+
+    var elements = myFormElement.elements;
+
+    myFormElement.reset();
+
+    for(i=0; i<elements.length; i++) {
+
+      field_type = elements[i].type.toLowerCase();
+
+      switch(field_type) {
+
+        case "text":
+        case "password":
+        case "textarea":
+        case "hidden":
+
+          elements[i].value = "";
+          break;
+
+        case "radio":
+        case "checkbox":
+          if (elements[i].checked) {
+            elements[i].checked = false;
+          }
+          break;
+
+        case "select-one":
+        case "select-multi":
+          //    elements[i].selectedIndex = 0;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+  }
   </script>
 </body>
 </html>
