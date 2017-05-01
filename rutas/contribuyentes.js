@@ -59,7 +59,7 @@ router.post('/filtrar', async function (req, res) {
   let db = new Bd()
   let texto = req.body.texto
   let contris = await db.getContribuyentes(`WHERE apellido LIKE '${texto}%'`, 'ORDER BY apellido, nombre')
-  console.log(contris)
+  //console.log(contris)
   res.send({ contris })
 })
 
@@ -86,6 +86,15 @@ router.get('/editar/:id', async function  (req, res) {
   let ciclos = await db.getCiclos()
   db.disconnect()
   res.render('contribuyentes-edit', {contri: contri, ciclos: ciclos})
+
+})
+
+router.get('/saldo/:id', async function (req, res) {
+  let id = req.params.id
+  let db = new Bd()
+  let result = await db.getCuotasPendientes(id)
+  db.disconnect()
+  res.send(result)
 
 })
 

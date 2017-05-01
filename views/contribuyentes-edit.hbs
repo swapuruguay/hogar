@@ -2,42 +2,43 @@
   <h1>{{titulo}}</h1>
   <p>&nbsp;</p>
   <div class="row">
+    <div class="col-sm-8">
    <form class="form-horizontal" id="form-editar-contribuyentes" >
      <div class="form-group">
-       <label for="nro" class="col-sm-2 control-label">Nro.</label>
-       <div class="col-sm-2">
+       <label for="nro" class="col-sm-4 control-label">Nro.</label>
+       <div class="col-sm-8">
          <input type="text" class="form-control text-center" id="id" name="id" value="{{ contri.id_contribuyente}}" readonly>
        </div>
      </div>
      <div class="form-group">
-       <label for="nombre" class="col-sm-2 control-label">Nombre</label>
-       <div class="col-sm-4">
+       <label for="nombre" class="col-sm-4 control-label">Nombre</label>
+       <div class="col-sm-8">
          <input type="text" class="form-control" id="nombre" name="nombre" value="{{ contri.nombre }}">
        </div>
      </div>
      <div class="form-group">
-       <label for="apellido" class="col-sm-2 control-label">Apellido</label>
-       <div class="col-sm-4">
+       <label for="apellido" class="col-sm-4 control-label">Apellido</label>
+       <div class="col-sm-8">
          <input type="text" class="form-control" id="apellido" name="apellido" value="{{ contri.apellido }}">
        </div>
      </div>
 
      <div class="form-group">
-       <label for="domicilio" class="col-sm-2 control-label">Domicilio</label>
-       <div class="col-sm-4">
+       <label for="domicilio" class="col-sm-4 control-label">Domicilio</label>
+       <div class="col-sm-8">
          <input type="text" class="form-control" id="domicilio" name="domicilio" value="{{ contri.domicilio }}">
        </div>
      </div>
 
      <div class="form-group">
-       <label for="telefono" class="col-sm-2 control-label">Teléfono</label>
-       <div class="col-sm-4">
+       <label for="telefono" class="col-sm-4 control-label">Teléfono</label>
+       <div class="col-sm-8">
          <input type="text" class="form-control" id="telefono" name="telefono" value="{{ contri.telefono }}">
        </div>
      </div>
      <div class="form-group">
-       <label for="mes" class="col-sm-2 control-label">Mes de pago</label>
-       <div class="col-sm-4">
+       <label for="mes" class="col-sm-4 control-label">Mes de pago</label>
+       <div class="col-sm-8">
          <select class="form-control" id="mes" name="mes">
            <option value="1">Enero</option>
            <option value="2">Febrero</option>
@@ -55,8 +56,8 @@
        </div>
        </div>
        <div class="form-group">
-       <label for="ciclo" class="col-sm-2 control-label">Ciclo</label>
-       <div class="col-sm-4">
+       <label for="ciclo" class="col-sm-4 control-label">Ciclo</label>
+       <div class="col-sm-8">
          <select class="form-control" id="ciclo" name="ciclo">
            {{#each ciclos}}
             <option value="{{ id_ciclo }}">{{ ciclo }}</option>
@@ -64,8 +65,51 @@
          </select>
        </div>
      </div>
+      <div class="col-sm-4"></div>
 
      <input type="submit" class="btn btn-default" value="Guardar">
    </form>
+ </div>
+   <div class="col-sm-4">
+     <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Cuotas Pendientes</h3>
+      </div>
+      <div class="panel-body" id="cuotas">
+        <span id="boton">Ver</span>
+      </div>
+    </div>
+   </div>
   </div>
 </div>
+<script>
+  let boton = document.getElementById('boton')
+  boton.addEventListener('click' ,getSaldo)
+
+  function getSaldo() {
+    let id = document.getElementById('id').value
+    let result = document.getElementById('cuotas')
+    superagent
+      .get(`/contribuyentes/saldo/${id}`)
+      .end(function(err, data) {
+        let texto = ''
+        if(!err) {
+          let importe = 0
+          texto += `<table class='table'>
+                    <tr><th>Mes de cargo</th><th>Importe</th></tr>`
+          data.body.forEach(function(c) {
+            texto+= `<tr><td>${c.mes}/${c.anio}</td><td>${c.importe}</td></tr>`
+            importe+= c.importe
+          })
+            texto+=`<tr><td>Total</td><td>${importe}</td></tr>`
+          texto+= '</table>'
+        
+          result.innerHTML = texto
+        }
+      })
+  }
+
+
+
+
+</script>
