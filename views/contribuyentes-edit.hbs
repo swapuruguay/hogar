@@ -37,6 +37,17 @@
        </div>
      </div>
      <div class="form-group">
+       <label for="id_categoria_fk" class="col-sm-4 control-label">Categoría</label>
+       <div class="col-sm-8">
+         <select class="form-control" id="id_categoria_fk" name="id_categoria_fk">
+           {{#each categorias}}
+           <option value="{{ id_categoria }}" {{ selected }}>{{ importe }}
+             {{/each}}
+
+           </select>
+         </div>
+       </div>
+     <div class="form-group">
        <label for="mes" class="col-sm-4 control-label">Mes de pago</label>
        <div class="col-sm-8">
          <select class="form-control" id="mes" name="mes">
@@ -103,7 +114,7 @@
           })
             texto+=`<tr><td>Total</td><td>${importe}</td></tr>`
           texto+= '</table>'
-        
+
           result.innerHTML = texto
         }
       })

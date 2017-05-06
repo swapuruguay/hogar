@@ -36,8 +36,9 @@ router.get('/listar', async function  (req, res) {
 router.get('/nuevo',  async function  (req, res) {
   let db = new Bd()
   let ciclos = await db.getCiclos()
+  let categorias = await db.getCategorias()
   db.disconnect()
-  res.render('contribuyentes-nuevo', {ciclos: ciclos})
+  res.render('contribuyentes-nuevo', {ciclos, categorias})
 })
 
 router.get('/prueba', async function  (req, res) {
@@ -67,10 +68,12 @@ router.post('/add', async function(req, res) {
   let db = new Bd()
   let contri = {}
   contri = req.body
-  contri.id_cliclo_fk
+  contri.estado = 1
+  contri.fecha_alta = '2017-05-01'
+  contri.id_ciclo_fk = contri.ciclo
   delete contri.ciclo
   delete contri.id
-  //console.log(contri)
+  console.log(contri)
   let result = await db.saveContribuyente(contri)
   res.send(result)
   db.disconnect()
@@ -81,11 +84,19 @@ router.get('/editar/:id', async function  (req, res) {
   let id = req.params.id
 
   let contri = (await db.getContribuyente(id))[0]
+  let categorias = await db.getCategorias()
+  categorias = categorias.map(cat => {
+    cat.selected = ''
+    if(contri.id_categoria_fk == cat.id_categoria) {
+      cat.selected = 'SELECTED'
+    }
+    return cat
+  })
  // let contri = contris[0]
 
   let ciclos = await db.getCiclos()
   db.disconnect()
-  res.render('contribuyentes-edit', {contri: contri, ciclos: ciclos})
+  res.render('contribuyentes-edit', {contri, ciclos, categorias})
 
 })
 
@@ -116,18 +127,10 @@ router.get('/generar', function(req, res) {
   res.render('cuotas-generar')
 })
 
-router.get('/preimprimimr', function(req, res) {
-  res.render('cuotas-imprimir')
+router.get('/pagar', function(req, res) {
+  res.render('contribuyentes-pagar')
 })
 
-router.post('/imprimir', async function (req, res) {
-  let db = new Bd()
-  let {mes, anio} = req.body
-
-  let cuotas = await db.getCuotas(mes, anio)
-  res.send(cuotas)
-
-})
 
 router.post('/generar', async function  (req, res) {
   let db = new Bd()

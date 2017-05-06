@@ -35,6 +35,17 @@
        </div>
      </div>
      <div class="form-group">
+       <label for="id_categoria_fk" class="col-sm-2 control-label">Categoría</label>
+       <div class="col-sm-4">
+         <select class="form-control" id="id_categoria_fk" name="id_categoria_fk">
+           {{#each categorias}}
+           <option value="{{ id_categoria }}">{{ importe }}
+             {{/each}}
+
+           </select>
+         </div>
+       </div>
+     <div class="form-group">
        <label for="mes" class="col-sm-2 control-label">Teléfono</label>
        <div class="col-sm-4">
          <select class="form-control" id="mes" name="mes">
@@ -52,7 +63,7 @@
            <option value="12">Diciembre</option>
          </select>
        </div>
-       </div>
+     </div>
        <div class="form-group">
        <label for="ciclo" class="col-sm-2 control-label">Ciclo</label>
        <div class="col-sm-4">

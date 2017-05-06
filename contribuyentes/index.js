@@ -77,6 +77,28 @@ class Contribuyentes {
 
   }
 
+  async getCategorias(where, order) {
+    let cond = where || ''
+    let orden = order || ''
+
+    let connection = this.con
+
+    //let task = co.wrap(function * () {
+      let conn = await connection
+      let cate = await conn.query(`SELECT * FROM categorias ${cond} ${orden}`)
+
+      if(!cate) {
+        return Promise.reject(new Error(`Not found`))
+      }
+
+      return Promise.resolve(cate)
+
+  //  })
+
+    //return Promise.resolve(task())
+
+  }
+
   async getCiclos() {
     let connection = this.con
     let conn = await connection
