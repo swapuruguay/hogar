@@ -14,17 +14,69 @@
      <div class="form-group">
        <label for="id" class="col-sm-2 control-label">Nro.Conribuyente</label>
        <div class="col-sm-2">
-         <input name="id" type="text" class="form-control text-center" id="id" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')">
+         <input name="id_contribuyente" type="text" class="form-control text-center" id="id_contribuyente" >
        </div>
-     </div>
-     <div class="form-group">
-       <label for="importe" class="col-sm-2 control-label">Importe</label>
-       <div class="col-sm-2">
-         <input type="text" class="form-control text-center" id="importe" name="importe">
-       </div>
+       <label id="nombre" class="col-sm-3"></label>
      </div>
 
+
      <input type="submit" class="btn btn-default" value="Guardar">
+     <p> <span id="message"></span></p>
+
    </form>
   </div>
 </div>
+<script>
+  let id = document.getElementById('id_contribuyente')
+  let form = document.getElementById('form-pago')
+  form.addEventListener('submit', function(evt) {
+    evt.preventDefault()
+    let fecha = document.getElementById('fecha')
+    let datos = { id_contribuyente: id.value, fecha: fecha.value }
+      fetch(`/contribuyentes/pagar`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(datos),
+        })
+        .then(function(response) {
+          return response.json()
+        })
+        .then(function(data) {
+          //  nombre.innerHTML = `${data.nombre} ${data.apellido}`
+            if(data.filas == 0) {
+              document.getElementById('message').innerHTML = 'Error no hay Cuotas Pendientes'
+            } else {
+              document.getElementById('message').innerHTML = 'Ingreso Correcto'
+            }
+
+      })
+      .catch(function(err) {
+          console.log(err)
+      })
+  })
+
+  let nombre = document.getElementById('nombre')
+  id.addEventListener('keyup', (evt) => {
+    if(id.value != '') {
+      fetch(`/contribuyentes/${id.value}`, {
+            headers: {
+              'Content-Type': 'application/json'
+          }})
+        .then(function(response) {
+          return response.json()
+        })
+        .then(function(data) {
+            nombre.innerHTML = `${data.nombre} ${data.apellido}`
+          //  console.log('data = ', data);
+
+      })
+      .catch(function(err) {
+          console.log(err)
+      })
+    } else {
+      nombre.innerHTML = ''
+    }
+  })
+</script>

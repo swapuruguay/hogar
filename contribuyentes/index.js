@@ -56,6 +56,21 @@ class Contribuyentes {
 
   }
 
+  async pagarCuota(cuota) {
+    let connection = this.con
+    console.log(cuota)
+    //let task = co.wrap(function * () {
+      let conn = await connection
+      let cate = await conn.query(`UPDATE cuotas SET estado = 2, fecha_pago = '${cuota.fecha}'
+                  WHERE estado = 1 AND id_contribuyente_fk = ${cuota.id_contribuyente} ORDER BY id_cuota LIMIT 1`)
+
+      if(!cate) {
+        return Promise.reject(new Error(`Not found`))
+      }
+
+      return Promise.resolve(cate)
+  }
+
   async getCategoria(id) {
 
 

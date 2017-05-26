@@ -95,6 +95,13 @@ router.get('/editar/:id', async function  (req, res) {
  // let contri = contris[0]
 
   let ciclos = await db.getCiclos()
+  ciclos = ciclos.map(c => {
+    c.selected = ''
+    if(contri.id_ciclo_fk == c.id_ciclo) {
+      c.selected = 'SELECTED'
+    }
+    return c
+  })
   db.disconnect()
   res.render('contribuyentes-edit', {contri, ciclos, categorias})
 
@@ -131,7 +138,6 @@ router.get('/pagar', function(req, res) {
   res.render('contribuyentes-pagar')
 })
 
-
 router.post('/generar', async function  (req, res) {
   let db = new Bd()
   let {mes, anio} = req.body
@@ -154,5 +160,36 @@ router.post('/generar', async function  (req, res) {
   res.send('Mes generado con éxito')
 
 })
+
+router.post('/pagar', async (req, res) => {
+  let fecha = req.body.fecha.split('/')
+  fecha = `${fecha[2]}-${fecha[1]}-${fecha[0]}`
+  let cuota = {
+    id_contribuyente: req.body.id_contribuyente,
+    fecha
+  }
+  //console.log(cuota)
+  let db = new Bd()
+  let result = await db.pagarCuota(cuota)
+//  console.log(result)
+  db.disconnect()
+
+  res.send({filas: result.affectedRows})
+})
+
+router.get('/:id', async (req, res) => {
+  let id = req.params.id
+  let db = new Bd()
+  let result = (await db.getContribuyente(id))[0]
+  if(result) {
+      res.send(result)
+  } else {
+    res.send({nombre: '', apellido: ''})
+  }
+
+
+})
+
+
 
 module.exports = router
