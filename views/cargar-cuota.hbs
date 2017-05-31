@@ -1,0 +1,57 @@
+<div class="container">
+  <form class="form-horizontal" id="form-cuotas">
+    <div class="form-group">
+      <label for="id" class="col-sm-2 control-label">Nro.Conribuyente</label>
+      <div class="col-sm-2">
+        <input name="id_contribuyente" type="text" class="form-control text-center" id="id_contribuyente" >
+      </div>
+      <label id="nombre" class="col-sm-3"></label>
+    </div>
+    <div class="form-group">
+      <label for="mes" class="col-sm-2 control-label">Mes</label>
+      <div class="col-sm-2">
+        <input name="mes" type="text" class="form-control text-center" id="mes" >
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="anio" class="col-sm-2 control-label">Año</label>
+      <div class="col-sm-2">
+        <input name="anio" type="text" class="form-control text-center" id="anio" >
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-default">Generar Mes</button>
+
+  </form>
+  <div id="resultado"></div>
+</div>
+
+<script type="text/javascript">
+  let form = document.getElementById('form-cuotas')
+  form.addEventListener('submit', function(evt) {
+    evt.preventDefault()
+    let datos = objectifyForm(form)
+    fetch('/contribuyentes/agrega', {
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(datos)
+    }).then(function(res) {
+      return res.json()
+    }).then(data => {
+      console.log('ok')
+    })
+  
+  })
+
+
+function objectifyForm(formArray) {
+
+  var returnArray = {};
+  for (var i = 0; i < formArray.length; i++){
+    returnArray[formArray[i]['name']] = formArray[i]['value'];
+  }
+  return returnArray;
+}
+</script>

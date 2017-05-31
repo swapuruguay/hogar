@@ -177,6 +177,26 @@ router.post('/pagar', async (req, res) => {
   res.send({filas: result.affectedRows})
 })
 
+router.get('/cargar', (req, res) => {
+  res.render('cargar-cuota')
+})
+
+router.post('/agrega' ,async (req, res) => {
+//console.log(req.body)
+  let cuota = {
+    id_contribuyente_fk: req.body.id_contribuyente,
+    mes: req.body.mes,
+    anio: req.body.anio,
+    estado: 1,
+    fecha_emision: `${req.body.anio}-${req.body.mes}-01`
+  }
+  let arreglo = []
+  arreglo[0] = cuota
+  let db = new Bd()
+  let result = await db.generarCuotas(arreglo)
+  res.send({ok: 'Ok'})
+})
+
 router.get('/:id', async (req, res) => {
   let id = req.params.id
   let db = new Bd()
