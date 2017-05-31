@@ -197,7 +197,7 @@ class Contribuyentes {
     let connection = this.con
 
     let conn = await connection
-      let contris =  await conn.query(`SELECT * FROM cuotas WHERE estado = 0 AND id_contribuyente_fk = ${idContribuyente}`)
+      let contris =  await conn.query(`SELECT * FROM cuotas WHERE estado = 1 AND id_contribuyente_fk = ${idContribuyente}`)
       if(!contris) {
         Promise.rejetc(new Error('Ocurrio un error'))
       }

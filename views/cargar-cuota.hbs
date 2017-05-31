@@ -19,7 +19,12 @@
         <input name="anio" type="text" class="form-control text-center" id="anio" >
       </div>
     </div>
-
+    <div class="form-group">
+      <label for="importe" class="col-sm-2 control-label">Importe</label>
+      <div class="col-sm-2">
+        <input name="importe" type="text" class="form-control text-center" id="importe" >
+      </div>
+    </div>
     <button type="submit" class="btn btn-default">Generar Mes</button>
 
   </form>
@@ -41,8 +46,11 @@
       return res.json()
     }).then(data => {
       console.log('ok')
+      form.reset()
+      let nro = document.getElementById('id_contribuyente').focus()
+      
     })
-  
+
   })
 
 

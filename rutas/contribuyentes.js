@@ -153,7 +153,7 @@ router.post('/generar', async function  (req, res) {
   */
   for(let c of contris) {
     let cat = (await db.getCategoria(c.id_categoria_fk))[0]
-    filas.push([c.id_contribuyente, mes, anio, cat.importe, 0, fecha])
+    filas.push([c.id_contribuyente, mes, anio, cat.importe, 1, fecha])
   }
   //console.log(filas)
   await db.generarCuotas(filas)
@@ -183,15 +183,9 @@ router.get('/cargar', (req, res) => {
 
 router.post('/agrega' ,async (req, res) => {
 //console.log(req.body)
-  let cuota = {
-    id_contribuyente_fk: req.body.id_contribuyente,
-    mes: req.body.mes,
-    anio: req.body.anio,
-    estado: 1,
-    fecha_emision: `${req.body.anio}-${req.body.mes}-01`
-  }
+  let fecha = `${req.body.anio}-${req.body.mes}-01`
   let arreglo = []
-  arreglo[0] = cuota
+  arreglo.push([req.body.id_contribuyente, req.body.mes, req.body.anio, req.body.importe, 1, fecha])
   let db = new Bd()
   let result = await db.generarCuotas(arreglo)
   res.send({ok: 'Ok'})

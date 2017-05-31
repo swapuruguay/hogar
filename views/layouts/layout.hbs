@@ -8,9 +8,6 @@
   <link rel="stylesheet" href="/css/app.css">
 
   <title>Hogar de Ancianos</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js"></script>
 </head>
 <body>
 
@@ -26,93 +23,33 @@
   </div>
     {{> footer }}
 
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js"></script>
 
   <script>
-  let fgen = document.getElementById('form-ingresar-contribuyentes')
-  let fedit = document.getElementById('form-editar-contribuyentes')
+  let fgen = document.getElementById('form-generar')
   if(fgen) {
-  fgen.addEventListener("submit", function(event){
+  fgen.addEventListener("submit", function(event) {
     event.preventDefault()
     let result = document.getElementById('resultado')
-    //result.classList.add('loader')
+    result.classList.add('loader')
     let formData = new FormData(fgen)
     superagent
-    .post('/contribuyentes/add')
+    .post('/contribuyentes/generar')
     .send(formData)
     .end(function(err, res){
      /* if(res.text == 'Ok') {*/
-      clearForm(fgen)
+    //  clearForm(fcli)
     //  } else {
-        //result.classList.remove('loader')
-        //result.innerHTML = res.text
+        result.classList.remove('loader')
+        result.innerHTML = res.text
     //  }
     })
 
 
   });
 }
-
-if(fedit) {
-  fedit.addEventListener("submit", function(event){
-    event.preventDefault()
-    let result = document.getElementById('resultado')
-  //  result.classList.add('loader')
-    let formData = new FormData(fedit)
-    superagent
-    .post('/contribuyentes/editar')
-    .send(formData)
-    .end(function(err, res){
-     /* if(res.text == 'Ok') {*/
-      clearForm(fedit)
-    //  } else {
-    //    result.classList.remove('loader')
-    //    result.innerHTML = res.text
-    //  }
-    })
-
-
-  })
-}
-
-  function clearForm(myFormElement) {
-
-    var elements = myFormElement.elements;
-
-    myFormElement.reset();
-
-    for(i=0; i<elements.length; i++) {
-
-      field_type = elements[i].type.toLowerCase();
-
-      switch(field_type) {
-
-        case "text":
-        case "password":
-        case "textarea":
-        case "hidden":
-
-          elements[i].value = "";
-          break;
-
-        case "radio":
-        case "checkbox":
-          if (elements[i].checked) {
-            elements[i].checked = false;
-          }
-          break;
-
-        case "select-one":
-        case "select-multi":
-          //    elements[i].selectedIndex = 0;
-          break;
-
-        default:
-          break;
-      }
-    }
-
-  }
   </script>
 </body>
 </html>
