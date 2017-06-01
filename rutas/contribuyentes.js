@@ -15,12 +15,22 @@ router.use(formData.stream());
 // union body and files
 router.use(formData.union());
 
-router.get('/', function(req, res) {
+function ensureAuth(req, res, next) {
+    if(req.isAuthenticated()) {
+        if(req.user.perfil == 1) {
+        req.user.habilitado = true
+      }
+        return next()
+    }
+    res.redirect('/login')
+}
+
+router.get('/', ensureAuth, function(req, res) {
 
   res.render('index-contribuyentes', {titulo: 'Area contribuyentes'})
 })
 
-router.get('/listar', async function  (req, res) {
+router.get('/listar', ensureAuth, async function  (req, res) {
 
   try {
     let db = new Bd()
@@ -33,7 +43,7 @@ router.get('/listar', async function  (req, res) {
   }
   })
 
-router.get('/nuevo',  async function  (req, res) {
+router.get('/nuevo', ensureAuth,  async function  (req, res) {
   let db = new Bd()
   let ciclos = await db.getCiclos()
   let categorias = await db.getCategorias()
@@ -41,7 +51,7 @@ router.get('/nuevo',  async function  (req, res) {
   res.render('contribuyentes-nuevo', {ciclos, categorias})
 })
 
-router.get('/prueba', async function  (req, res) {
+router.get('/prueba', ensureAuth, async function  (req, res) {
   let db = new Bd()
   let fecha = new Date().toJSON().slice(0,10)
   let contris = []
@@ -79,7 +89,7 @@ router.post('/add', async function(req, res) {
   db.disconnect()
 })
 
-router.get('/editar/:id', async function  (req, res) {
+router.get('/editar/:id', ensureAuth, async function  (req, res) {
   let db = new Bd()
   let id = req.params.id
 
@@ -107,7 +117,7 @@ router.get('/editar/:id', async function  (req, res) {
 
 })
 
-router.get('/saldo/:id', async function (req, res) {
+router.get('/saldo/:id', ensureAuth, async function (req, res) {
   let id = req.params.id
   let db = new Bd()
   let result = await db.getCuotasPendientes(id)
@@ -130,11 +140,11 @@ router.post('/editar', async function(req, res) {
   db.disconnect()
 })
 
-router.get('/generar', function(req, res) {
+router.get('/generar', ensureAuth, function(req, res) {
   res.render('cuotas-generar')
 })
 
-router.get('/pagar', function(req, res) {
+router.get('/pagar', ensureAuth, function(req, res) {
   res.render('contribuyentes-pagar')
 })
 
@@ -177,7 +187,7 @@ router.post('/pagar', async (req, res) => {
   res.send({filas: result.affectedRows})
 })
 
-router.get('/cargar', (req, res) => {
+router.get('/cargar', ensureAuth, (req, res) => {
   res.render('cargar-cuota')
 })
 
@@ -191,7 +201,7 @@ router.post('/agrega' ,async (req, res) => {
   res.send({ok: 'Ok'})
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', ensureAuth, async (req, res) => {
   let id = req.params.id
   let db = new Bd()
   let result = (await db.getContribuyente(id))[0]
