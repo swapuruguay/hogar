@@ -189,8 +189,16 @@ class Contribuyentes {
 
   }
 
-  deleteContribuyente(contri) {
+  async deleteContribuyente(idContribuyente) {
+    let connection = this.con
 
+    let conn = await connection
+      let contris =  await conn.query(`UPDATE contribuyentes SET estado = 0 WHERE id_contribuyente = ${idContribuyente}`)
+      if(!contris) {
+        Promise.rejetc(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(contris)
   }
 
   async getCuotasPendientes(idContribuyente) {
@@ -217,10 +225,6 @@ class Contribuyentes {
       }
 
       return Promise.resolve(contris)
-
-  }
-
-  getCuotasSinCobrar() {
 
   }
 
@@ -251,6 +255,21 @@ class Contribuyentes {
 
       return Promise.resolve(result)
 
+
+  }
+
+  async getDeudores() {
+    let connection = this.con
+
+    let conn = await connection
+      let sql = `SELECT c.id_contribuyente, c.nombre, c.apellido, SUM(cu.importe) AS saldo FROM contribuyentes c
+                JOIN cuotas cu ON c.id_contribuyente = cu.id_contribuyente_fk GROUP BY c.id_contribuyente HAVING saldo > 0`
+      let result = await conn.query(sql)
+      if(!result) {
+        Promise.reject(new Error('Ocurrio un error'))
+      }
+
+      return Promise.resolve(result)
 
   }
 

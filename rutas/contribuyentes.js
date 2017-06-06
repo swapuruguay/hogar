@@ -43,6 +43,19 @@ router.get('/listar', ensureAuth, async function  (req, res) {
   }
   })
 
+router.get('/deudores', async function(req, res) {
+  try {
+    let db = new Bd()
+    let contris = await db.getDeudores()
+    db.disconnect()
+    res.render('listar-deudores', {title: 'Listado de deudores', contris})
+
+  } catch(err) {
+    console.log(err.message)
+  }
+
+})
+
 router.get('/nuevo', ensureAuth,  async function  (req, res) {
   let db = new Bd()
   let ciclos = await db.getCiclos()
@@ -62,6 +75,7 @@ router.get('/prueba', ensureAuth, async function  (req, res) {
   //  console.log(contris[0])
 
  await db.generarCli(contris)
+ db.disconnect()
   //res.send('Mes generado con éxito')
   res.end()
 })
@@ -70,6 +84,7 @@ router.post('/filtrar', async function (req, res) {
   let db = new Bd()
   let texto = req.body.texto
   let contris = await db.getContribuyentes(`WHERE apellido LIKE '${texto}%'`, 'ORDER BY apellido, nombre')
+  db.disconnect()
   //console.log(contris)
   res.send({ contris })
 })
@@ -148,6 +163,14 @@ router.get('/pagar', ensureAuth, function(req, res) {
   res.render('contribuyentes-pagar')
 })
 
+router.get('/eliminar/:id', async function(req, res) {
+  let db = new Bd()
+  let id = req.params.id
+  let result = db.deleteContribuyente(id)
+  db.disconnect()
+  res.redirect('/contribuyentes/listar')
+})
+
 router.post('/generar', async function  (req, res) {
   let db = new Bd()
   let {mes, anio} = req.body
@@ -167,6 +190,7 @@ router.post('/generar', async function  (req, res) {
   }
   //console.log(filas)
   await db.generarCuotas(filas)
+  db.disconnect()
   res.send('Mes generado con éxito')
 
 })
@@ -198,6 +222,7 @@ router.post('/agrega' ,async (req, res) => {
   arreglo.push([req.body.id_contribuyente, req.body.mes, req.body.anio, req.body.importe, 1, fecha])
   let db = new Bd()
   let result = await db.generarCuotas(arreglo)
+  db.disconnect()
   res.send({ok: 'Ok'})
 })
 
@@ -210,10 +235,9 @@ router.get('/:id', ensureAuth, async (req, res) => {
   } else {
     res.send({nombre: '', apellido: ''})
   }
-
+  db.disconnect()
 
 })
-
 
 
 module.exports = router
