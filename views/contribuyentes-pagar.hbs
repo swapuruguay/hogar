@@ -4,7 +4,6 @@
   <div class="row">
     <h3>Pago de cuotas</h3>
    <form class="form-horizontal" id="form-pago" >
-
      <div class="form-group">
        <label for="fecha" class="col-sm-2 control-label">Fecha</label>
        <div class="col-sm-2">
@@ -69,11 +68,9 @@
         })
         .then(function(data) {
             nombre.innerHTML = `${data.nombre} ${data.apellido}`
-          //  console.log('data = ', data);
-
-      })
+        })
       .catch(function(err) {
-          console.log(err)
+          console.log(JSON.stringify(err))
       })
     } else {
       nombre.innerHTML = ''

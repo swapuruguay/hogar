@@ -1,5 +1,5 @@
-const mysql = require('promise-mysql')
-const config = require('../config')
+import mysql from 'promise-mysql'
+import config from '../config'
 
 class Bd {
 
@@ -26,33 +26,23 @@ class Bd {
   async disconnect() {
     let connection = this.con
     let conn = await connection
-      conn.destroy()
-      return conn
-
+    conn.destroy()
+    return conn
   }
 
-
-
-    getUser(where, order) {
-        let orden = order || '', cond = where || ''
-
-        let connection = this.con
-        let task = async function () {
-            let conn = await connection
-            let user = await conn.query(`SELECT * FROM usuarios  ${cond} ${orden}`)
-
-            if (!user) {
-                return Promise.reject(new Error(`not found`))
-            }
-
-            return Promise.resolve(user)
-        }
-
-        return Promise.resolve(task())
+  getUser(where, order) {
+    let orden = order || '', cond = where || ''
+    let connection = this.con
+    let task = async function () {
+      let conn = await connection
+      let user = await conn.query(`SELECT * FROM usuarios  ${cond} ${orden}`)
+      if (!user) {
+        return Promise.reject(new Error('not found'))
+      }
+      return Promise.resolve(user)
     }
+    return Promise.resolve(task())
+  }
 }
 
-
-
-
-module.exports = Bd
+export default Bd

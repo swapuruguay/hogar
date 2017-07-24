@@ -1,28 +1,27 @@
 'use strict'
 
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const Bd = require('../contribuyentes')
-const config = require('../config')
-const formData = require('express-form-data')
+import Bd from '../contribuyentes'
+import formData from 'express-form-data'
 
 // parsing data with connect-multiparty. Result set on req.body and req.files
-router.use(formData.parse());
+router.use(formData.parse())
 // clear all empty files
-router.use(formData.format());
+router.use(formData.format())
 // change file objects to node stream.Readable
-router.use(formData.stream());
+router.use(formData.stream())
 // union body and files
-router.use(formData.union());
+router.use(formData.union())
 
 function ensureAuth(req, res, next) {
-    if(req.isAuthenticated()) {
-        if(req.user.perfil == 1) {
-        req.user.habilitado = true
-      }
-        return next()
+  if(req.isAuthenticated()) {
+    if(req.user.perfil == 1) {
+      req.user.habilitado = true
     }
-    res.redirect('/login')
+    return next()
+  }
+  res.redirect('/login')
 }
 
 router.get('/', ensureAuth, function(req, res) {
@@ -30,7 +29,7 @@ router.get('/', ensureAuth, function(req, res) {
   res.render('index-contribuyentes', {titulo: 'Area contribuyentes'})
 })
 
-router.get('/listar', ensureAuth, async function  (req, res) {
+router.get('/listar', ensureAuth, async function(req, res) {
 
   try {
     let db = new Bd()
@@ -41,7 +40,7 @@ router.get('/listar', ensureAuth, async function  (req, res) {
   } catch(err) {
     console.log(err.message)
   }
-  })
+})
 
 router.get('/deudores', async function(req, res) {
   try {
@@ -72,10 +71,8 @@ router.get('/prueba', ensureAuth, async function  (req, res) {
     contris.push(['Contri'+i, 'Apell'+i, 'Domicilio'+i, 1, 1, 0, 1, fecha, 'telefono'+i])
   }
 
-  //  console.log(contris[0])
-
- await db.generarCli(contris)
- db.disconnect()
+  await db.generarCli(contris)
+  db.disconnect()
   //res.send('Mes generado con éxito')
   res.end()
 })
@@ -117,7 +114,6 @@ router.get('/editar/:id', ensureAuth, async function  (req, res) {
     }
     return cat
   })
- // let contri = contris[0]
 
   let ciclos = await db.getCiclos()
   ciclos = ciclos.map(c => {
@@ -166,7 +162,7 @@ router.get('/pagar', ensureAuth, function(req, res) {
 router.get('/eliminar/:id', async function(req, res) {
   let db = new Bd()
   let id = req.params.id
-  let result = db.deleteContribuyente(id)
+  db.deleteContribuyente(id)
   db.disconnect()
   res.redirect('/contribuyentes/listar')
 })
@@ -202,10 +198,15 @@ router.post('/pagar', async (req, res) => {
     id_contribuyente: req.body.id_contribuyente,
     fecha
   }
-  //console.log(cuota)
+  let ingreso = {
+    id_tipo_fk: 1,
+    fecha,
+
+  }
+  console.log(ingreso)
   let db = new Bd()
   let result = await db.pagarCuota(cuota)
-//  console.log(result)
+  //  console.log(result)
   db.disconnect()
 
   res.send({filas: result.affectedRows})
@@ -221,17 +222,18 @@ router.post('/agrega' ,async (req, res) => {
   let arreglo = []
   arreglo.push([req.body.id_contribuyente, req.body.mes, req.body.anio, req.body.importe, 1, fecha])
   let db = new Bd()
-  let result = await db.generarCuotas(arreglo)
+  await db.generarCuotas(arreglo)
   db.disconnect()
   res.send({ok: 'Ok'})
 })
 
-router.get('/:id', ensureAuth, async (req, res) => {
+router.get('/:id', async (req, res) => {
   let id = req.params.id
   let db = new Bd()
   let result = (await db.getContribuyente(id))[0]
+
   if(result) {
-      res.send(result)
+    res.send(result)
   } else {
     res.send({nombre: '', apellido: ''})
   }
@@ -239,5 +241,4 @@ router.get('/:id', ensureAuth, async (req, res) => {
 
 })
 
-
-module.exports = router
+export default router
