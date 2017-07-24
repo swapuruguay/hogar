@@ -7,13 +7,13 @@
      <div class="form-group">
        <label for="fecha" class="col-sm-2 control-label">Fecha</label>
        <div class="col-sm-2">
-         <input type="text" class="form-control text-center" id="fecha" name="fecha">
+         <input type="text" data-importe='' class="form-control text-center" id="fecha" name="fecha">
        </div>
      </div>
      <div class="form-group">
        <label for="id" class="col-sm-2 control-label">Nro.Conribuyente</label>
        <div class="col-sm-2">
-         <input name="id_contribuyente" type="text" class="form-control text-center" id="id_contribuyente" >
+         <input name="id_contribuyente"  type="text" class="form-control text-center" id="id_contribuyente" >
        </div>
        <label id="nombre" class="col-sm-3"></label>
      </div>
@@ -31,47 +31,48 @@
   form.addEventListener('submit', function(evt) {
     evt.preventDefault()
     let fecha = document.getElementById('fecha')
-    let datos = { id_contribuyente: id.value, fecha: fecha.value }
-      fetch(`/contribuyentes/pagar`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(datos),
-        })
-        .then(function(response) {
-          return response.json()
-        })
-        .then(function(data) {
-          //  nombre.innerHTML = `${data.nombre} ${data.apellido}`
-            if(data.filas == 0) {
-              document.getElementById('message').innerHTML = 'Error no hay Cuotas Pendientes'
-            } else {
-              document.getElementById('message').innerHTML = 'Ingreso Correcto'
-            }
+    let datos = { id_contribuyente: id.value, fecha: fecha.value, importe: id.dataset.importe }
+    fetch('/contribuyentes/pagar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(datos),
+    })
+      .then(function(response) {
+        return response.json()
+      })
+      .then(function(data) {
+        //  nombre.innerHTML = `${data.nombre} ${data.apellido}`
+        if(data.filas == 0) {
+          document.getElementById('message').innerHTML = 'Error no hay Cuotas Pendientes'
+        } else {
+          document.getElementById('message').innerHTML = 'Ingreso Correcto'
+        }
 
       })
       .catch(function(err) {
-          console.log(err)
+        console.log(err)
       })
   })
 
   let nombre = document.getElementById('nombre')
-  id.addEventListener('keyup', (evt) => {
+  id.addEventListener('keyup', () => {
     if(id.value != '') {
       fetch(`/contribuyentes/${id.value}`, {
-            headers: {
-              'Content-Type': 'application/json'
-          }})
+        headers: {
+          'Content-Type': 'application/json'
+        }})
         .then(function(response) {
           return response.json()
         })
         .then(function(data) {
-            nombre.innerHTML = `${data.nombre} ${data.apellido}`
+          id.dataset.importe = data.cat.importe
+          nombre.innerHTML = `${data.nombre} ${data.apellido}`
         })
-      .catch(function(err) {
+        .catch(function(err) {
           console.log(JSON.stringify(err))
-      })
+        })
     } else {
       nombre.innerHTML = ''
     }

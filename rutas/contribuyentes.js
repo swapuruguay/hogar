@@ -3,6 +3,7 @@
 import express from 'express'
 const router = express.Router()
 import Bd from '../contribuyentes'
+import BDIng from '../ingresos'
 import formData from 'express-form-data'
 
 // parsing data with connect-multiparty. Result set on req.body and req.files
@@ -198,14 +199,22 @@ router.post('/pagar', async (req, res) => {
     id_contribuyente: req.body.id_contribuyente,
     fecha
   }
-  let ingreso = {
-    id_tipo_fk: 1,
-    fecha,
 
-  }
-  console.log(ingreso)
+
+
   let db = new Bd()
   let result = await db.pagarCuota(cuota)
+  if (result.affectedRows > 0) {
+    let ingreso = {
+      id_tipo_fk: 1,
+      importe: req.body.importe,
+      fecha
+    }
+    let dbi = new BDIng()
+    await dbi.addIngreso(ingreso)
+    console.log(ingreso)
+    dbi.disconnect()
+  }
   //  console.log(result)
   db.disconnect()
 
@@ -231,7 +240,8 @@ router.get('/:id', async (req, res) => {
   let id = req.params.id
   let db = new Bd()
   let result = (await db.getContribuyente(id))[0]
-
+  let cat = (await db.getCategoria(result.id_categoria_fk))[0]
+  result.cat = cat
   if(result) {
     res.send(result)
   } else {
