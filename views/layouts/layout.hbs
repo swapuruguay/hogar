@@ -1,55 +1,111 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang='es'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/app.css">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0'>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+  <link rel='stylesheet' href='/css/bootstrap.min.css'>
+  <link rel='stylesheet' href='/css/app.css'>
 
   <title>Hogar de Ancianos</title>
 </head>
 <body>
 
-  <div class="wrapper">
+  <div class='wrapper'>
 
     {{> header }}
 
-    <div class="container">
+    <div class='container'>
 
       {{{ body }}}
     </div>
-    <div class="push"></div>
+    <div class='push'></div>
   </div>
     {{> footer }}
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+  <script src='/js/bootstrap.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js'></script>
 
   <script>
-  let fgen = document.getElementById('form-generar')
+  let fgen = document.getElementById('form-ingresar-contribuyentes')
+  let fedit = document.getElementById('form-editar-contribuyentes')
   if(fgen) {
-  fgen.addEventListener("submit", function(event) {
-    event.preventDefault()
-    let result = document.getElementById('resultado')
-    result.classList.add('loader')
-    let formData = new FormData(fgen)
-    superagent
-    .post('/contribuyentes/generar')
-    .send(formData)
-    .end(function(err, res){
-     /* if(res.text == 'Ok') {*/
-    //  clearForm(fcli)
-    //  } else {
-        result.classList.remove('loader')
-        result.innerHTML = res.text
-    //  }
+    fgen.addEventListener('submit', function(event){
+      event.preventDefault()
+      document.getElementById('resultado')
+      //result.classList.add('loader')
+      let formData = new FormData(fgen)
+      superagent
+        .post('/contribuyentes/add')
+        .send(formData)
+        .end(function(){
+        /* if(res.text == 'Ok') {*/
+          clearForm(fgen)
+          //  } else {
+        //result.classList.remove('loader')
+        //result.innerHTML = res.text
+          //  }
+        })
+
+
     })
-
-
-  });
 }
+
+if(fedit) {
+    fedit.addEventListener('submit', function(event){
+      event.preventDefault()
+      document.getElementById('resultado')
+      //  result.classList.add('loader')
+      let formData = new FormData(fedit)
+      superagent
+        .post('/contribuyentes/editar')
+        .send(formData)
+        .end(function(){
+          /* if(res.text == 'Ok') {*/
+          clearForm(fedit)
+          //  } else {
+          //    result.classList.remove('loader')
+          //    result.innerHTML = res.text
+          //  }
+        })
+
+
+    })
+}
+
+function clearForm(myFormElement) {
+
+    var elements = myFormElement.elements
+    //myFormElement.reset()
+
+    for(let i=0; i<elements.length; i++) {
+
+      let field_type = elements[i].type.toLowerCase()
+
+      switch(field_type) {
+      case 'text':
+      case 'password':
+      case 'textarea':
+      case 'hidden':
+        elements[i].value = ''
+        break
+      case 'radio':
+      case 'checkbox':
+        if (elements[i].checked) {
+          elements[i].checked = false
+        }
+        break
+      case 'select-one':
+      case 'select-multi':
+      //    elements[i].selectedIndex = 0;
+        break
+      default:
+        break
+      }
+    }
+
+  }
   </script>
 </body>
 </html>

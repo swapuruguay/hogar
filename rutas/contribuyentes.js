@@ -96,7 +96,6 @@ router.post('/add', async function(req, res) {
   contri.id_ciclo_fk = contri.ciclo
   delete contri.ciclo
   delete contri.id
-  console.log(contri)
   let result = await db.saveContribuyente(contri)
   res.send(result)
   db.disconnect()
@@ -146,7 +145,6 @@ router.post('/editar', async function(req, res) {
   contri.id_cliclo_fk
   delete contri.ciclo
   delete contri.id
-  console.log(contri)
   let result = await db.saveContribuyente(contri)
   res.send(result)
   db.disconnect()
