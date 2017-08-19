@@ -131,7 +131,7 @@ class Contribuyentes {
     let conn = await connection
     let contris = await conn.query(`SELECT * FROM contribuyentes WHERE id_ciclo_fk = ${ciclo}`)
     if(!contris) {
-      Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.rejetc(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
   }
@@ -142,7 +142,7 @@ class Contribuyentes {
     let conn = await connection
     let contris = await conn.query(`SELECT * FROM contribuyentes WHERE id_categoria_fk = ${categoria}`)
     if(!contris) {
-      Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.rejetc(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
 
@@ -161,7 +161,7 @@ class Contribuyentes {
     }
     let result = await conn.query(sql, contri)
     if(!result) {
-      Promise.reject(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(result)
   }
@@ -172,7 +172,7 @@ class Contribuyentes {
     let conn = await connection
     let contris =  await conn.query(`UPDATE contribuyentes SET estado = 0 WHERE id_contribuyente = ${idContribuyente}`)
     if(!contris) {
-      Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.rejetc(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
   }
@@ -183,7 +183,7 @@ class Contribuyentes {
     let conn = await connection
     let contris =  await conn.query(`SELECT * FROM cuotas WHERE estado = 1 AND id_contribuyente_fk = ${idContribuyente}`)
     if(!contris) {
-      Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.rejetc(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
 
@@ -196,7 +196,7 @@ class Contribuyentes {
     let conn = await connection
     let contris = await conn.query(`SELECT * FROM cuotas WHERE mes = ${mes} AND anio = ${anio}`)
     if(!contris) {
-      Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.rejetc(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
 
@@ -209,7 +209,7 @@ class Contribuyentes {
     let sql = 'INSERT INTO contribuyentes (nombre, apellido, domicilio, id_categoria_fk, id_ciclo_fk, mes_pago, estado, fecha_alta, telefono) VALUES ?'
     let result = await conn.query(sql, [lista])
     if(!result) {
-      Promise.reject(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(result)
 
@@ -222,7 +222,7 @@ class Contribuyentes {
     let sql = 'INSERT INTO cuotas (id_contribuyente_fk, mes, anio, importe, estado, fecha_emision) VALUES ?'
     let result = await conn.query(sql, [lista])
     if(!result) {
-      Promise.reject(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(result)
   }
@@ -235,7 +235,7 @@ class Contribuyentes {
                 JOIN cuotas cu ON c.id_contribuyente = cu.id_contribuyente_fk GROUP BY c.id_contribuyente HAVING saldo > 0`
     let result = await conn.query(sql)
     if(!result) {
-      Promise.reject(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(result)
 

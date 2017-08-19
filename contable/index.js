@@ -32,24 +32,6 @@ class Contable {
     return conn
   }
 
-  async saveArticulo (articulo) {
-    let connection = this.con
-
-    let conn = await connection
-    let id = articulo.id_articulo || 0
-    let sql = ''
-    if(id === 0) {
-      sql = 'INSERT INTO articulos SET ?'
-    } else {
-      sql = `UPDATE articulos SET ? WHERE id_articulo = ${id}`
-    }
-    let result = await conn.query(sql, articulo)
-    if(!result) {
-      Promise.reject(new Error('Ocurrio un error'))
-    }
-    return Promise.resolve(result)
-  }
-
   async saveMovimiento (movimiento) {
     let connection = this.con
 
@@ -63,39 +45,29 @@ class Contable {
     }
     let result = await conn.query(sql, movimiento)
     if(!result) {
-      Promise.reject(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(result)
   }
-
-  async getArticulo (id) {
-    let connection = this.con
-    let conn = await connection
-    let articulo = await conn.query(`SELECT * FROM articulos WHERE id_articulo = ${id}`)
-    if(!articulo) {
-      Promise.reject(new Error('Ocurrio un error'))
-    }
-    return Promise.resolve(articulo)
-  }
-
-  async getArticulos () {
-    let connection = this.con
-    let conn = await connection
-    let articulos = await conn.query('SELECT * FROM articulos')
-    if(!articulos) {
-      Promise.reject(new Error('Ocurrio un error'))
-    }
-    return Promise.resolve(articulos)
-  }
-
+  
   async getMovimientos (tipo) {
     let connection = this.con
     let conn = await connection
     let movimientos = await conn.query(`SELECT * FROM movimientos WHERE tipo = ${tipo}`)
     if(!movimientos) {
-      Promise.reject(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(movimientos)
+  }
+
+  async getSaldoCaja() {
+    let connection = this.con
+    let conn = await connection
+    let saldo = await conn.query('SELECT SUM(importe) as saldo FROM movimientos')
+    if(!saldo) {
+      return Promise.reject(new Error('No existen Datos'))
+    }
+    return Promise.resolve(saldo)
   }
 }
 

@@ -3,7 +3,7 @@
 import express from 'express'
 const router = express.Router()
 import Bd from '../contribuyentes'
-import BDIng from '../ingresos'
+import BDIng from '../contable'
 import formData from 'express-form-data'
 
 // parsing data with connect-multiparty. Result set on req.body and req.files
@@ -92,7 +92,7 @@ router.post('/add', async function(req, res) {
   let contri = {}
   contri = req.body
   contri.estado = 1
-  contri.fecha_alta = '2017-05-01'
+  contri.fecha_alta = new Date().toJSON().slice(0, 10)
   contri.id_ciclo_fk = contri.ciclo
   delete contri.ciclo
   delete contri.id
@@ -198,18 +198,19 @@ router.post('/pagar', async (req, res) => {
     fecha
   }
 
-
-
   let db = new Bd()
   let result = await db.pagarCuota(cuota)
+  let contri = (await db.getContribuyente(req.body.id_contribuyente))[0]
   if (result.affectedRows > 0) {
     let ingreso = {
+      id_movimiento: 0,
       id_tipo_fk: 1,
       importe: req.body.importe,
-      fecha
+      fecha,
+      concepto: `Cuota contrib. ${contri.nombre} ${contri.apellido}`
     }
     let dbi = new BDIng()
-    await dbi.addIngreso(ingreso)
+    await dbi.save(ingreso)
     console.log(ingreso)
     dbi.disconnect()
   }

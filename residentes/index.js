@@ -45,7 +45,7 @@ class Residentes {
       let sql = 'INSERT INTO cuotas (id_residente, nombre, apellido, documento, fecha_nacimiento, mutualista, cuidados, fecha_ingreso) VALUES ?'
       let result = yield conn.query(sql, residente)
       if(!result) {
-        Promise.reject(new Error('Ocurrio un error'))
+        return Promise.reject(new Error('Ocurrio un error'))
       }
       return Promise.resolve(result)
     })
@@ -63,7 +63,7 @@ class Residentes {
       let conn = yield connection
       let lista = yield conn.query('SELECT * FROM residentes WHERE estado = 1')
       if(!lista) {
-        Promise.reject(new Error('Ocurrio un error'))
+        return Promise.reject(new Error('Ocurrio un error'))
       }
       return Promise.resolve(lista)
     })
@@ -77,7 +77,7 @@ class Residentes {
       let conn = yield connection
       let residente = yield conn.query(`SELECT * FROM residentes WHERE estado = 1 AND id_residente = ${id}`)
       if(!residente) {
-        Promise.reject(new Error('Ocurrio un error'))
+        return Promise.reject(new Error('Ocurrio un error'))
       }
       return Promise.resolve(residente)
     })

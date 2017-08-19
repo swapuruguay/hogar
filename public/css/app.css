@@ -28,6 +28,11 @@ html, body {
   display: inline;
 }
 
+#caja {
+  font-size: 4em;
+  height: auto;
+  text-align: right;
+}
 .loader {
   color: #0dc5c1;
   font-size: 20px;
