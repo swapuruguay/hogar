@@ -1,0 +1,51 @@
+<div class="container">
+  <h1>{{titulo}}</h1>
+  <p>&nbsp;</p>
+
+   <form class="form-inline" id="form-consultas" >
+
+     <div class="form-group">
+       <label for="tipo" class="control-label">Seleccione opción</label>
+        <select class="form-control" id="tipo" name="tipo">
+            <option  value="ultimos">Ultimos Movimientos</option>
+            <option value="fecha">Entre fechas</option>
+        </select>
+     </div>
+     <div class="form-group">
+       <label for="nro" class="control-label">Nro.</label>
+         <input type="text" class="form-control text-center" id="id" name="id">
+     </div>
+     <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span> Actualizar</button>
+   </form>
+</div>
+<script>
+  let form = document.getElementById('form-pagos')
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault()
+    let fecha = form.fecha.value.split('/')
+    let sel = document.getElementById('tipo')
+    let lado = sel.options[sel.selectedIndex].dataset.lado
+    let datos = {
+      fecha: `${fecha[2]}-${fecha[1]}-${fecha[0]} `,
+      concepto: form.concepto.value,
+      id_tipo_fk: sel.value,
+      importe: (lado == 'D')? form.importe.value : -(form.importe.value)
+    }
+
+    fetch('/contable/movimientos', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(datos)
+    }).then(res => res.json())
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+        if(err) {
+        //  console.log(err)
+        }
+      })
+  })
+</script>

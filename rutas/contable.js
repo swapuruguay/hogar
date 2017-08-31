@@ -1,4 +1,4 @@
-'use strict'
+ 'use strict'
 
 import express from 'express'
 const router = express.Router()
@@ -25,16 +25,6 @@ function ensureAuth(req, res, next) {
   res.redirect('/login')
 }
 
-router.post('/pagos', async (req, res) => {
-  let db = new Bd()
-  let movimiento = req.body
-  movimiento.id_tipo_fk = 2
-  let result = await db.saveMovimiento(movimiento)
-  console.log(result)
-  console.log(movimiento)
-  res.send({res: req.body})
-})
-
 router.get('/', ensureAuth, (req, res) => {
 
   res.render('index-contable', {titulo: 'Módulo Contable'})
@@ -47,8 +37,25 @@ router.get('/caja', ensureAuth, async (req, res) => {
   res.render('caja', {caja})
 })
 
-router.get('/pagos', ensureAuth, (req, res) => {
-  res.render('pagos', {titulo: 'Pago de gastos'})
+router.get('/consultas', ensureAuth, async (req, res) => {
+  res.render('consultas')
+})
+
+router.get('/movimientos', ensureAuth, async (req, res) => {
+  let db = new Bd()
+  let tipos = await db.getTipos()
+  tipos = tipos.filter(t => {
+    return t.tipo !== 'Cuota'
+  })
+  res.render('movimientos', {titulo: 'Movimientos de caja', tipos})
+})
+
+router.post('/movimientos', async (req, res) => {
+  let db = new Bd()
+  let mov = req.body
+  let result = await db.saveMovimiento(mov)
+  console.log(result)
+  res.send({result})
 })
 
 export default router

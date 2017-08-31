@@ -49,7 +49,7 @@ class Contable {
     }
     return Promise.resolve(result)
   }
-  
+
   async getMovimientos (tipo) {
     let connection = this.con
     let conn = await connection
@@ -58,6 +58,16 @@ class Contable {
       return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(movimientos)
+  }
+
+  async getTipos () {
+    let connection = this.con
+    let conn = await connection
+    let  tipos = await conn.query('SELECT * FROM tipos_movimientos')
+    if(!tipos) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(tipos)
   }
 
   async getSaldoCaja() {

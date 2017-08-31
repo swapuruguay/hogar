@@ -16,6 +16,16 @@
        </div>
      </div>
      <div class="form-group">
+       <label for="tipo" class="col-sm-2 control-label">Tipo de movimiento</label>
+       <div class="col-sm-4">
+        <select class="form-control" id="tipo" name="tipo">
+          {{#each tipos}}
+          <option data-lado ={{lado}} value="{{id_tipo}}">{{tipo}}</option>
+          {{/each}}
+        </select>
+       </div>
+     </div>
+     <div class="form-group">
        <label for="concepto" class="col-sm-2 control-label">Concepto</label>
        <div class="col-sm-4">
          <input type="text" class="form-control" id="concepto" name="concepto">
@@ -37,13 +47,16 @@
   form.addEventListener('submit', (evt) => {
     evt.preventDefault()
     let fecha = form.fecha.value.split('/')
+    let sel = document.getElementById('tipo')
+    let lado = sel.options[sel.selectedIndex].dataset.lado
     let datos = {
-      fecha: `${fecha[2]}-${fecha[1]}-${fecha[0]}`,
+      fecha: `${fecha[2]}-${fecha[1]}-${fecha[0]} `,
       concepto: form.concepto.value,
-      importe: -(form.importe.value)
+      id_tipo_fk: sel.value,
+      importe: (lado == 'D')? form.importe.value : -(form.importe.value)
     }
-    //let formData = new FormData(form)
-    fetch('/contable/pagos', {
+
+    fetch('/contable/movimientos', {
       headers: {
         'Content-Type': 'application/json'
       },
