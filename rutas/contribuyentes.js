@@ -161,7 +161,7 @@ router.get('/pagar', ensureAuth, function(req, res) {
 router.get('/eliminar/:id', async function(req, res) {
   let db = new Bd()
   let id = req.params.id
-  db.deleteContribuyente(id)
+  await db.deleteContribuyente(id)
   db.disconnect()
   res.redirect('/contribuyentes/listar')
 })
