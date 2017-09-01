@@ -1,4 +1,4 @@
- 'use strict'
+'use strict'
 
 import express from 'express'
 const router = express.Router()
@@ -33,7 +33,6 @@ router.get('/', ensureAuth, (req, res) => {
 router.get('/caja', ensureAuth, async (req, res) => {
   let db = new Bd()
   let caja = (await db.getSaldoCaja())[0]
-  console.log(caja)
   res.render('caja', {caja})
 })
 
@@ -54,7 +53,6 @@ router.post('/movimientos', async (req, res) => {
   let db = new Bd()
   let mov = req.body
   let result = await db.saveMovimiento(mov)
-  console.log(result)
   res.send({result})
 })
 
