@@ -40,6 +40,13 @@ router.get('/consultas', ensureAuth, async (req, res) => {
   res.render('consultas')
 })
 
+router.post('/consultas', async (req, res) => {
+  const db = new Bd()
+  
+  let listado = await db.getMovimientos()
+  res.send({listado})
+})
+
 router.get('/movimientos', ensureAuth, async (req, res) => {
   let db = new Bd()
   let tipos = await db.getTipos()
