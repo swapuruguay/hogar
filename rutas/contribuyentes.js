@@ -81,7 +81,7 @@ router.get('/prueba', ensureAuth, async function  (req, res) {
 router.post('/filtrar', async function (req, res) {
   let db = new Bd()
   let texto = req.body.texto
-  let contris = await db.getContribuyentes(`WHERE apellido LIKE '${texto}%'`, 'ORDER BY apellido, nombre')
+  let contris = await db.getContribuyentes(`WHERE apellido LIKE '${texto}%' AND estado = 1`, 'ORDER BY apellido, nombre')
   db.disconnect()
   //console.log(contris)
   res.send({ contris })
