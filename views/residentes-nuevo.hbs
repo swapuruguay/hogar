@@ -49,70 +49,16 @@
          <input type="text" name="ingreso" id="ingreso" class="form-control" >
        </div>
     </div>
-    <fieldset id="campos">
-      <legend>Agregar Responsable</legend>
-      <div class="form-group">
-          <div class="col-sm-6">
-            <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i>
-      </div>
-            <input type="text" class="form-control" id="referente" placeholder="Nombre y apellido">
-            <div class="input-group-addon"><i class="fa fa-phone-square" aria-hidden="true"></i>
-      </div>
-            <input type="text" class="form-control" id="celref" placeholder="Teléfono">
-
-            </div>
-          </div>
-          <div class="col-sn-1">
-             <button type="button" class="btn" onclick="add()"><i class="fa fa-plus-circle" aria-hidden="true"></i>
-</button>
-          </div>
-        </div>
-        <ul id="respo">
-
-        </ul>
-    </fieldset>
-
-
-     <button class="btn btn-default" type="button" onclick="enviar()">Guardar</button>
+    <div class="form-group">
+       <label for="referente" class="col-sm-2 control-label">Familiar Referente</label>
+       <div class="col-sm-4">
+         <input type="text" name="referente" id="referente" class="form-control" >
+       </div>
+       <div class="input-group col-sm-3">
+         <div class="input-group-addon"><i class="fa fa-phone"></i></div><input class="form-control" type="text" name="telefono" id="telefono">
+       </div>
+    </div>
+     <input type="submit" class="btn btn-default">Guardar</button>
    </form>
   </div>
 </div>
-<script>
-  function add() {
-
-    let nombre = document.getElementById('referente')
-    let tel = document.getElementById('celref')
-    let campos = document.getElementById('respo')
-    let eldiv = document.createElement('li')
-    //eldiv.classList.add('col-sm-4')
-    //let p = document.createElement('p')
-  //  p.classList.add('form-control-static')
-    let text = document.createTextNode(nombre.value + ' ' +tel.value)
-    //p.appendChild(text)
-    eldiv.appendChild(text)
-    campos.appendChild(eldiv)
-    tel.value = ''
-    nombre.value = ''
-
-  }
-
-  function enviar() {
-    let lista = document.getElementById('respo')
-    let lis = lista.querySelectorAll('li');
-
-    let arreglo = []
-    lis.forEach(function(li) {
-      arreglo.push(li.textContent)
-    })
-    arreglo = arreglo.map(function(el) {
-      let valores = el.split(' ')
-      el = {nombre: valores[0], celular: valores[1]}
-      return el
-    })
-
-    console.log(arreglo[0].celular)
-  }
-
-
-</script>

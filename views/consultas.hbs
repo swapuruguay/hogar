@@ -22,8 +22,7 @@
   let form = document.getElementById('form-consultas')
   form.addEventListener('submit', (evt) => {
     evt.preventDefault()
-    
-
+   
     fetch('/contable/consultas', {
       headers: {
         'Content-Type': 'application/json'
