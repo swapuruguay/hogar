@@ -8,6 +8,10 @@
   <link rel='stylesheet' href='/css/app.css'>
 
   <title>Hogar de Ancianos</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+  <script src='/js/bootstrap.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js'></script>
+
 </head>
 <body>
 
@@ -23,10 +27,7 @@
   </div>
     {{> footer }}
 
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
-  <script src='/js/bootstrap.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js'></script>
-
+  
   <script>
   let fgen = document.getElementById('form-ingresar-contribuyentes')
   let fedit = document.getElementById('form-editar-contribuyentes')
@@ -41,7 +42,7 @@
         .send(formData)
         .end(function(){
         /* if(res.text == 'Ok') {*/
-          clearForm(fgen)
+          clearForm(fgen) 
           //  } else {
         //result.classList.remove('loader')
         //result.innerHTML = res.text

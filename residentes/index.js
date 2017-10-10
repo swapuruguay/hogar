@@ -8,7 +8,7 @@ class Residentes {
     this.connect()
   }
 
-  cconnect() {
+  connect() {
 
     let options = {
       host: config.host,
@@ -35,7 +35,14 @@ class Residentes {
 
     let connection = this.con
     let conn = await connection
-    let sql = 'INSERT INTO cuotas (id_residente, nombre, apellido, documento, fecha_nacimiento, mutualista, cuidados, fecha_ingreso) VALUES ?'
+    let id = residente.id_residente || 0
+    let sql = ''
+    if(id === 0 ) {
+      sql = 'INSERT INTO residentes SET ?'
+    } else {
+      sql = `UPDATE residentes SET ? WHERE id_residente = ${id}`
+    }
+    
     let result = await conn.query(sql, residente)
     if(!result) {
       return Promise.reject(new Error('Ocurrio un error'))
@@ -47,11 +54,12 @@ class Residentes {
 
   }*/
 
-  async getResidentes() {
+  async getResidentes(where, order) {
     let connection = this.con
-
+    let cond = where || ''
+    let orden = order || ''
     let conn = await connection
-    let lista = await conn.query('SELECT * FROM residentes WHERE estado = 1')
+    let lista = await conn.query(`SELECT * FROM residentes ${cond} ${orden}`)
     if(!lista) {
       return Promise.reject(new Error('Ocurrio un error'))
     }
