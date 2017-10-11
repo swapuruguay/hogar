@@ -39,15 +39,19 @@ router.post('/add', async (req, res) => {
     nombre: req.body.nombre,
     apellido: req.body.apellido,
     documento: req.body.documento,
+    domicilio: req.body.domicilio,
     fecha_nacimiento: convertFecha(req.body.nacimiento),
     mutualista: req.body.mutualista,
     cuidados: req.body.cuidados,
+    tel_cuidado: req.body.tel_cuidado,
+    previsora: req.body.previsora,
+    tel_previsora: req.body.tel_previsora,
+    tipo_ingreso: req.body.tipo_ingreso,
     telefono: req.body.telefono,
     familiar: req.body.referente,
     estado: 1,
     fecha_ingreso: convertFecha(req.body.ingreso)
   }
-  console.log(residente)
   let result = await db.saveResidente(residente)
   res.send(result)
 })
@@ -74,6 +78,19 @@ router.get('/editar/:id', ensureAuth, async function  (req, res) {
   let residente = (await db.getResidente(id))[0]
   residente.fecha_ingreso = revertirFecha(residente.fecha_ingreso)
   residente.fecha_nacimiento = revertirFecha(residente.fecha_nacimiento)
+  const tipos = [
+    {
+      tipo: 'P',
+      texto: 'Pensión',
+      selected: (residente.tipo_ingreso === 'P') ? 'SELECTED' : ''
+    },
+    {
+      tipo: 'J',
+      texto: 'Jubilación',
+      selected: (residente.tipo_ingreso === 'J') ? 'SELECTED' : ''
+    }
+  ]
+  residente.tipos = tipos
 
   db.disconnect()
   res.render('residentes-edit', {residente})
@@ -110,7 +127,6 @@ router.post('/filtrar', async function (req, res) {
 })
 
 function convertFecha(fecha) {
-  console.log(fecha)
   const espanol = fecha.split('/')
   return `${espanol[2]}-${espanol[1]}-${espanol[0]}`
 }

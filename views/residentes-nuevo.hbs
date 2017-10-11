@@ -30,6 +30,21 @@
        </div>
      </div>
      <div class="form-group">
+       <label for="domicilio" class="col-sm-2 control-label">Domicilio</label>
+       <div class="col-sm-4">
+         <input type="text" class="form-control" id="domicilio" name="domicilio">
+       </div>
+     </div>
+     <div class="form-group">
+       <label for="tipoIngreso" class="col-sm-2 control-label">Tipo de ingreso</label>
+       <div class="col-sm-4">
+         <select class="form-control" id="tipo_ingreso" name="tipo_ingreso">
+           <option value="P">Pensión</option>
+           <option value="J">Jubilación</option>
+         </select>
+       </div>
+     </div>
+     <div class="form-group">
        <label for="mutualista" class="col-sm-2 control-label">Mutualista</label>
        <div class="col-sm-4">
          <input type="text" class="form-control" id="mutualista" name="mutualista">
@@ -41,8 +56,21 @@
        <div class="col-sm-4">
          <input type="text" id="cuidados" name="cuidados" class="form-control" >
        </div>
+       <div class="input-group col-sm-3">
+         <div class="input-group-addon"><i class="fa fa-phone"></i></div>
+         <input class="form-control" type="text" name="tel_cuidado" id="tel_cuidado">
+       </div>
     </div>
-
+    <div class="form-group">
+       <label for="previsora" class="col-sm-2 control-label">Previsora</label>
+       <div class="col-sm-4">
+         <input type="text" id="previsora" name="previsora" class="form-control" >
+       </div>
+       <div class="input-group col-sm-3">
+         <div class="input-group-addon"><i class="fa fa-phone"></i></div>
+         <input class="form-control" type="text" name="tel_previsora" id="tel_previsora">
+       </div>
+    </div>
     <div class="form-group">
        <label for="ingreso" class="col-sm-2 control-label">Ingreso</label>
        <div class="col-sm-4">
@@ -54,8 +82,15 @@
        <div class="col-sm-4">
          <input type="text" name="referente" id="referente" class="form-control" >
        </div>
-       <div class="input-group col-sm-3">
-         <div class="input-group-addon"><i class="fa fa-phone"></i></div><input class="form-control" type="text" name="telefono" id="telefono">
+       <div class="input-group col-sm-6">
+         <div class="input-group-addon">
+           <label>Relación</label>
+         </div>  
+         <input type="text" class="form-control" name="relacion" id="relacion">
+         <div class="input-group-addon">
+           <i class="fa fa-phone"></i>
+         </div>
+         <input class="form-control" type="text" name="telefono" id="telefono">
        </div>
     </div>
      <input type="submit" class="btn btn-default" value="Guardar">
