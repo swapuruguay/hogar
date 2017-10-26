@@ -48,7 +48,8 @@ router.post('/add', async (req, res) => {
     tel_previsora: req.body.tel_previsora,
     tipo_ingreso: req.body.tipo_ingreso,
     telefono: req.body.telefono,
-    familiar: req.body.referente,
+    familiar: req.body.familiar,
+    relacion: req.body.relacion,
     estado: 1,
     fecha_ingreso: convertFecha(req.body.ingreso)
   }

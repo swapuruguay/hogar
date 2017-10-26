@@ -88,8 +88,15 @@
        <div class="col-sm-4">
          <input type="text" name="familiar" id="familiar" class="form-control" value="{{residente.familiar}}">
        </div>
-       <div class="input-group col-sm-3">
-         <div class="input-group-addon"><i class="fa fa-phone"></i></div><input class="form-control" type="text" name="telefono" id="telefono" value="{{residente.telefono}}" >
+       <div class="input-group col-sm-6">
+         <div class="input-group-addon">
+           <label>Relación</label>
+         </div>  
+         <input type="text" class="form-control" name="relacion" id="relacion" value="{{residente.relacion}}">
+         <div class="input-group-addon">
+           <i class="fa fa-phone"></i>
+         </div>
+         <input class="form-control" type="text" name="telefono" id="telefono" value="{{residente.telefono}}">
        </div>
     </div>
      <input type="submit" class="btn btn-default" value="Guardar">
