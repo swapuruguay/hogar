@@ -210,7 +210,7 @@ router.post('/pagar', async (req, res) => {
       concepto: `Cuota contrib. ${contri.nombre} ${contri.apellido}`
     }
     let dbi = new BDIng()
-    await dbi.save(ingreso)
+    await dbi.saveMovimiento(ingreso)
     console.log(ingreso)
     dbi.disconnect()
   }
