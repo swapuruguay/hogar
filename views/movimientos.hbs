@@ -38,13 +38,15 @@
          <input type="text" class="form-control" id="importe" name="importe">
        </div>
      </div>
-     <input type="submit" class="btn btn-default" value="Guardar">
+     <button type="submit" class="btn btn-default"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
    </form>
+   <p>&nbsp;</p>
+   <div id="resultado"></div>
   </div>
 </div>
 <script>
   let form = document.getElementById('form-pagos')
-  form.addEventListener('submit', (evt) => {
+  form.addEventListener('submit', async (evt) => {
     evt.preventDefault()
     let fecha = form.fecha.value.split('/')
     let sel = document.getElementById('tipo')
@@ -56,20 +58,28 @@
       importe: (lado == 'D')? form.importe.value : -(form.importe.value)
     }
 
-    fetch('/contable/movimientos', {
+    let res = await fetch('/contable/movimientos', {
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'POST',
       body: JSON.stringify(datos)
-    }).then(res => res.json())
-      .then( () => {
-        clearForm(form)
-      })
-      .catch(err => {
+    })
+    let respuesta = await res.json()
+    let div = document.getElementById('resultado')
+    console.log(respuesta)
+    if(respuesta.result.link) {
+      div.innerHTML = `<a class="btn btn-warning" href = "/contable/recibo/${respuesta.result.insertId}">
+      <i class="fa fa-print" aria-hidden="true"></i> Imprimir</a>`
+    } else {
+      div.innerHTML = ''
+    }
+    
+    clearForm(form)
+    /*catch(err => {
         if(err) {
-        //  console.log(err)
+          console.log('Hubo un error')
         }
-      })
+      })*/
   })
 </script>

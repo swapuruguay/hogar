@@ -22,6 +22,7 @@
     "body-parser": "^1.15.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
+    "dateformat-light": "^1.0.17",
     "express": "^4.14.0",
     "express-form-data": "^1.0.0",
     "express-handlebars": "^3.0.0",
@@ -30,6 +31,7 @@
     "mysql": "^2.12.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "pdfkit": "^0.8.3",
     "promise-mysql": "^2.0.0"
   },
   "devDependencies": {

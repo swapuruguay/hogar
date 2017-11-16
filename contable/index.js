@@ -50,7 +50,7 @@ class Contable {
     return Promise.resolve(result)
   }
 
-  async getMovimientos (tipo) {
+  async getMovimientosByTipo (tipo) {
     let where = ''
     if(tipo) {
       where = `WHERE id_tipo_fk = ${tipo}`
@@ -58,6 +58,18 @@ class Contable {
     let connection = this.con
     let conn = await connection
     let movimientos = await conn.query(`SELECT * FROM movimientos ${where}`)
+    if(!movimientos) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(movimientos)
+  }
+
+  async getMovimientos (where, order) {
+    let cond = where || ''
+    let orden = order || ''
+    let connection = this.con
+    let conn = await connection
+    let movimientos = await conn.query(`SELECT * FROM movimientos ${cond} ${orden}`)
     if(!movimientos) {
       return Promise.reject(new Error('Ocurrio un error'))
     }
