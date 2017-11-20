@@ -5,6 +5,7 @@ import handleb from 'handlebars'
 import contri from './rutas/contribuyentes'
 import resi from './rutas/residentes'
 import contable from './rutas/contable'
+import articulos from './rutas/articulos'
 import fs from 'fs'
 import passport from 'passport'
 const app = express()
@@ -60,6 +61,7 @@ const port = process.env.port || 5501
 app.use('/contribuyentes', contri)
 app.use('/residentes', resi)
 app.use('/contable', contable)
+app.use('/articulos', articulos)
 
 app.get('/', ensureAuth, function(req, res) {
 

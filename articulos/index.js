@@ -43,8 +43,9 @@ class Articulos {
   async save(articulo) {
     let connection = this.con
     let conn = await connection
+    let id = articulo.id_articulo || 0
     let sql = ''
-    if(articulo.id_articulo === 0) {
+    if(id === 0) {
       sql = 'INSERT INTO articulos SET ?'
     } else {
       sql = `UPDATE articulos SET ? WHERE id_articulo = ${articulo.id_articulo}`

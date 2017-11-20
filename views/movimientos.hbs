@@ -67,7 +67,6 @@
     })
     let respuesta = await res.json()
     let div = document.getElementById('resultado')
-    console.log(respuesta)
     if(respuesta.result.link) {
       div.innerHTML = `<a class="btn btn-warning" href = "/contable/recibo/${respuesta.result.insertId}">
       <i class="fa fa-print" aria-hidden="true"></i> Imprimir</a>`
