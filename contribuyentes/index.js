@@ -232,7 +232,7 @@ class Contribuyentes {
 
     let conn = await connection
     let sql = `SELECT c.id_contribuyente, c.nombre, c.apellido, SUM(cu.importe) AS saldo FROM contribuyentes c
-                JOIN cuotas cu ON c.id_contribuyente = cu.id_contribuyente_fk GROUP BY c.id_contribuyente HAVING saldo > 0`
+                JOIN cuotas cu ON c.id_contribuyente = cu.id_contribuyente_fk WHERE cu.estado = 1 GROUP BY c.id_contribuyente HAVING saldo > 0`
     let result = await conn.query(sql)
     if(!result) {
       return Promise.reject(new Error('Ocurrio un error'))
