@@ -140,7 +140,7 @@ router.get('/editar/:id', ensureAuth, async function  (req, res) {
 router.get('/listar', ensureAuth, async (req, res) => {
   try {
     let db = new Bd()
-    let contris = await db.getResidentes(' WHERE estado = 1')
+    let contris = await db.getResidentes(' WHERE estado = 1', 'ORDER BY apellido, nombre')
     db.disconnect()
     res.render('listar-residentes', {title: 'Listado de Residentes', contris})
 
