@@ -42,8 +42,27 @@ class Residentes {
     } else {
       sql = `UPDATE residentes SET ? WHERE id_residente = ${id}`
     }
-    
+
     let result = await conn.query(sql, residente)
+    if(!result) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(result)
+  }
+
+  async savePariente(pariente) {
+
+    let connection = this.con
+    let conn = await connection
+    let id = pariente.id_pariente || 0
+    let sql = ''
+    if(id === 0 ) {
+      sql = 'INSERT INTO parientes SET ?'
+    } else {
+      sql = `UPDATE parientes SET ? WHERE id_pariente = ${id}`
+    }
+
+    let result = await conn.query(sql, pariente)
     if(!result) {
       return Promise.reject(new Error('Ocurrio un error'))
     }

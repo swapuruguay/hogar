@@ -35,6 +35,8 @@ router.get('/nuevo', (req, res) => {
 
 router.post('/add', async (req, res) => {
   const db = new Bd()
+  let parientes = []
+  parientes = req.body.parientes
   let residente = {
     nombre: req.body.nombre,
     apellido: req.body.apellido,
@@ -47,13 +49,19 @@ router.post('/add', async (req, res) => {
     previsora: req.body.previsora,
     tel_previsora: req.body.tel_previsora,
     tipo_ingreso: req.body.tipo_ingreso,
-    telefono: req.body.telefono,
-    familiar: req.body.familiar,
-    relacion: req.body.relacion,
     estado: 1,
     fecha_ingreso: convertFecha(req.body.ingreso)
   }
   let result = await db.saveResidente(residente)
+  parientes = parientes.map(p => {
+    p.id_residente_fk = result.insertId
+    return p
+  })
+
+  parientes.forEach( async (par) => {
+    await db.savePariente(par)
+  })
+
   res.send(result)
 })
 
@@ -122,7 +130,7 @@ router.post('/filtrar', async function (req, res) {
   let db = new Bd()
   let texto = req.body.texto
   let contris = await db.getResidentes(`WHERE apellido LIKE '${texto}%' AND estado = 1`, 'ORDER BY apellido, nombre')
-  
+
   db.disconnect()
   res.send({ contris })
 })

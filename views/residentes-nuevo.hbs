@@ -78,28 +78,43 @@
        </div>
     </div>
     <fieldset id="campos">
-      <legend>Agregar Responsable</legend>
+      <legend>Agregar Referente</legend>
       <div class="form-group">
-          <div class="col-sm-6">
-            <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i>
-      </div>
-            <input type="text" class="form-control" id="referente" placeholder="Nombre y apellido">
-            <div class="input-group-addon"><i class="fa fa-phone-square" aria-hidden="true"></i>
-      </div>
-            <input type="text" class="form-control" id="celref" placeholder="Teléfono">
-
+        <div class="col-sm-11">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <i class="fa fa-user" aria-hidden="true"></i>
             </div>
-          </div>
-          <div class="col-sn-1">
-             <button type="button" class="btn" onclick="add()"><i class="fa fa-plus-circle" aria-hidden="true"></i>
-</button>
+            <input type="text" class="form-control" id="referente" placeholder="Nombre y apellido">
+            <div class="input-group-addon">
+              <i class="fa fa-users" aria-hidden="true"></i>
+            </div>
+            <input type="text" class="form-control" id="parentezco" placeholder="Parentezco">
+            <div class="input-group-addon">
+              <i class="fa fa-phone-square" aria-hidden="true"></i>
+            </div>
+            <input type="text" class="form-control" id="telref" placeholder="Teléfono">
+            <div class="input-group-addon">
+              <i class="fa fa-mobile" aria-hidden="true"></i>
+            </div>
+            <input type="text" class="form-control" id="celref" placeholder="Celular">
           </div>
         </div>
-        <ul id="respo">
-
-        </ul>
+        <div class="col-sm-1">
+          <button type="button" id="add" class="btn"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <table id="respo" class="table table-condensed table-striped">
+        <tr>
+          <th>Nombre</th>
+          <th>Parentezco</th>
+          <th>Teléfono</th>
+          <th>Celular</th>
+        </tr>
+      </table>
+      <button type="button" class="btn" id="remover"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
     </fieldset>
+    <br>
     <!-- <div class="form-group">
        <label for="familiar" class="col-sm-2 control-label">Familiar Referente</label>
        <div class="col-sm-4">
@@ -123,20 +138,86 @@
 
 <script>
   const form = document.getElementById('form-residentes')
-  form.addEventListener('submit', evt => {
+  form.addEventListener('submit', async evt => {
     evt.preventDefault()
     const formData = new FormData(form)
-    superagent
-        .post('/residentes/add')
-        .send(formData)
-        .end(function(res){
-        /* if(res.text == 'Ok') {*/
-        console.log(res)
-          clearForm(form)
-          //  } else {
-        //result.classList.remove('loader')
-        //result.innerHTML = res.text
-          //  }
-        })
+    const tabla = document.getElementById('respo')
+    let parientes = []
+    if(tabla.childNodes.length > 2 ) {
+      for(let i = 2; i < tabla.childNodes.length; i++) {
+        let p = {
+          nombre: tabla.childNodes[i].childNodes[0].childNodes[0].data,
+          parentezco: tabla.childNodes[i].childNodes[1].childNodes[0].data,
+          telefono: tabla.childNodes[i].childNodes[2].childNodes[0].data,
+          celular: tabla.childNodes[i].childNodes[3].childNodes[0].data
+        }
+        console.log(p)
+        parientes.push(p)
+      }
+    }
+    console.log(parientes)
+    for(let h = 0; h < parientes.length; h++) {
+      formData.append(`parientes[${h}].nombre`, parientes[h].nombre)
+      formData.append(`parientes[${h}].parentezco`, parientes[h].parentezco)
+      formData.append(`parientes[${h}].telefono`, parientes[h].telefono)
+      formData.append(`parientes[${h}].celular`, parientes[h].celular)
+    }
+    let res = await fetch('/residentes/add', {
+      method: 'POST',
+      body: formData
+    })
+
+    let respuesta = await res.json()
+    //console.log(respuesta)
+    clearForm(form)
+    recursiva()
   })
+
+  document.getElementById('add').addEventListener('click', add)
+  document.getElementById('remover').addEventListener('click', remove)
+
+  function recursiva() {
+    let tabla = document.getElementById('respo')
+    if(tabla.childNodes.length > 2) {
+      remove()
+      recursiva()
+    }
+
+  }
+
+  function add() {
+
+    let nombre = document.getElementById('referente')
+    let tel = document.getElementById('telref')
+    let cel = document.getElementById('celref')
+    let parentezco = document.getElementById('parentezco')
+    let campos = document.getElementById('respo')
+    let tr = document.createElement('tr')
+    let texto = `<td>${nombre.value}</td><td>${parentezco.value}</td><td>${tel.value}</td><td>${cel.value}</td>`
+    //eldiv.classList.add('col-sm-4')
+    //let p = document.createElement('p')
+  //  p.classList.add('form-control-static')
+    //let text = document.createTextNode(nombre.value + ' ' +tel.value)
+    //p.appendChild(text)
+    tr.innerHTML = texto
+    campos.appendChild(tr)
+    tel.value = ''
+    nombre.value = ''
+    cel.value = ''
+    parentezco.value = ''
+
+  }
+
+  function prueba() {
+    let tabla = document.getElementById('respo')
+    let fila = tabla.childNodes[2].childNodes[0].childNodes[0]
+    console.log(fila)
+  }
+
+  function remove() {
+    let tabla = document.getElementById('respo')
+    if(tabla.childNodes.length > 2) {
+      tabla.removeChild(tabla.lastChild)
+    }
+  }
 </script>
