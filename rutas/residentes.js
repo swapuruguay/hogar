@@ -58,24 +58,52 @@ router.post('/add', async (req, res) => {
     return p
   })
 
-  parientes.forEach( async (par) => {
-    await db.savePariente(par)
-  })
-
+  for(let i = 0; i < parientes.length; i++) {
+    await db.savePariente(parientes[i])
+  }
+  db.disconnect()
   res.send(result)
 })
 
-router.post('/editar', async function(req, res) {
+router.post('/parientes', async (req, res) => {
   let db = new Bd()
-  let residente = {}
-  residente = req.body
-  residente.id_residente = residente.id
-  residente.fecha_nacimiento = convertFecha(req.body.nacimiento)
-  residente.fecha_ingreso = convertFecha(req.body.ingreso)
-  delete residente.ingreso
-  delete residente.nacimiento
-  delete residente.id
+  let parientes = await db.getParientesResidente(req.body.id)
+  db.disconnect()
+  res.send({parientes})
+})
+
+router.post('/editar', async (req, res) => {
+  let db = new Bd()
+  let parientes = req.body.parientes
+
+  let residente = {
+    nombre: req.body.nombre,
+    id_residente: req.body.id,
+    apellido: req.body.apellido,
+    documento: req.body.documento,
+    domicilio: req.body.domicilio,
+    fecha_nacimiento: convertFecha(req.body.nacimiento),
+    mutualista: req.body.mutualista,
+    cuidados: req.body.cuidados,
+    tel_cuidado: req.body.tel_cuidado,
+    previsora: req.body.previsora,
+    tel_previsora: req.body.tel_previsora,
+    tipo_ingreso: req.body.tipo_ingreso,
+    estado: 1,
+    fecha_ingreso: convertFecha(req.body.ingreso)
+  }
+  parientes = parientes.map(p => {
+    p.id_residente_fk = req.body.id
+    return p
+  })
   let result = await db.saveResidente(residente)
+
+  if(result) {
+    await db.deletePariente(req.body.id)
+    for(let i = 0; i < parientes.length; i++) {
+      await db.savePariente(parientes[i])
+    }
+  }
   res.send(result)
   db.disconnect()
 })
@@ -85,8 +113,11 @@ router.get('/editar/:id', ensureAuth, async function  (req, res) {
   let id = req.params.id
 
   let residente = (await db.getResidente(id))[0]
+  let parientes = await db.getParientesResidente(id)
+
   residente.fecha_ingreso = revertirFecha(residente.fecha_ingreso)
   residente.fecha_nacimiento = revertirFecha(residente.fecha_nacimiento)
+  residente.parientes = parientes
   const tipos = [
     {
       tipo: 'P',
@@ -122,6 +153,7 @@ router.get('/eliminar/:id', async function(req, res) {
   let db = new Bd()
   let id = req.params.id
   await db.delResidente(id)
+  await db.deletePariente(id)
   db.disconnect()
   res.redirect('/residentes/listar')
 })

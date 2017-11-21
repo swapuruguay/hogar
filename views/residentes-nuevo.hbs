@@ -115,22 +115,7 @@
       <button type="button" class="btn" id="remover"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
     </fieldset>
     <br>
-    <!-- <div class="form-group">
-       <label for="familiar" class="col-sm-2 control-label">Familiar Referente</label>
-       <div class="col-sm-4">
-         <input type="text" name="familiar" id="familiar" class="form-control" >
-       </div>
-       <div class="input-group col-sm-6">
-         <div class="input-group-addon">
-           <label>Relación</label>
-         </div>
-         <input type="text" class="form-control" name="relacion" id="relacion">
-         <div class="input-group-addon">
-           <i class="fa fa-phone"></i>
-         </div>
-         <input class="form-control" type="text" name="telefono" id="telefono">
-       </div>
-    </div> -->
+
      <input type="submit" class="btn btn-default" value="Guardar">
    </form>
   </div>
@@ -143,6 +128,7 @@
     const formData = new FormData(form)
     const tabla = document.getElementById('respo')
     let parientes = []
+
     if(tabla.childNodes.length > 2 ) {
       for(let i = 2; i < tabla.childNodes.length; i++) {
         let p = {
@@ -151,11 +137,10 @@
           telefono: tabla.childNodes[i].childNodes[2].childNodes[0].data,
           celular: tabla.childNodes[i].childNodes[3].childNodes[0].data
         }
-        console.log(p)
         parientes.push(p)
       }
     }
-    console.log(parientes)
+
     for(let h = 0; h < parientes.length; h++) {
       formData.append(`parientes[${h}].nombre`, parientes[h].nombre)
       formData.append(`parientes[${h}].parentezco`, parientes[h].parentezco)

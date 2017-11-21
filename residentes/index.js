@@ -86,11 +86,32 @@ class Residentes {
 
   }
 
+  async getParientesResidente(id) {
+    let connection = this.con
+    let conn = await connection
+    let parientes = await conn.query(`SELECT * FROM parientes WHERE id_residente_fk = ${id}`)
+    if(!parientes) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(parientes)
+  }
+
   async delResidente(id) {
     let connection = this.con
 
     let conn = await connection
     let result = await conn.query(`DELETE FROM residentes WHERE id_residente=${id}`)
+    if(!result) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(result)
+  }
+
+  async deletePariente(id) {
+    let connection = this.con
+
+    let conn = await connection
+    let result = await conn.query(`DELETE FROM parientes WHERE id_residente_fk=${id}`)
     if(!result) {
       return Promise.reject(new Error('Ocurrio un error'))
     }
