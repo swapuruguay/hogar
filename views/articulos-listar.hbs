@@ -1,0 +1,70 @@
+<p>&nbsp;</p>
+<div class="row">
+  <form class="form-horizontal">
+
+    <div class="form-group">
+        <div class="col-sm-6">
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></div>
+            <input type="text" name="campo" id="campo" onkeyup="buscar()" class="form-control" placeholder="Buscar">
+          </div>
+        </div>
+
+      </div>
+  </form>
+  <p>&nbsp;</p>
+  <div class="col-md-6">
+    <div id="result">
+
+
+    <table class="table table-condensed table-striped table-bordered table-responsive" >
+      <tr>
+        <th>Artículo</th>
+        <th>Stock</th>
+        <th colspan="2"></th>
+      </tr>
+      {{#each articulos}}
+        <tr>
+          <td>{{ nombre }}</td>
+          <td>{{ cantidad }}</td>
+          <td class="text-center success" ><a href="/articulos/editar/{{ id_articulo }}">
+
+<i class="fa fa-pencil" aria-hidden="true"></i>
+</a></td>
+          <td class="text-center danger" ><a href="/articulos/eliminar/{{ id_articulo }}"><i class="fa fa-trash" aria-hidden="true"></i>
+</a></td>
+        </tr>
+      {{/each}}
+    </table>
+    </div>
+  </div>
+</div>
+<script>
+async function buscar() {
+  let cadena = document.getElementById('campo').value
+  //console.log('OKK')
+  let result = document.getElementById('result')
+  result.classList.add('loader')
+  let formData = new FormData()
+  formData.append('texto', cadena)
+  let res = await fetch('/articulos/listar', {
+    method: 'POST',
+    body: formData
+  })
+  let respuesta = await res.json()
+  result.classList.remove('loader')
+  let tabla = `<table class="table table-condensed table-striped table-bordered table-responsive"><tr><th>Nombre</th>
+                  <th>Apellido</th><th colspan="2"></th></tr>`
+  respuesta.articulos.forEach(function (c) {
+    tabla+= `<tr><td>${c.nombre}</td><td>${c.cantidad}</td>
+             <td class="text-center success" ><a href="/articulos/editar/${c.id_articulo}"><i class="fa fa-pencil" aria-hidden="true"></i>
+             </a></td>
+             <td class="text-center success" ><a href="/articulos/eliminar/${c.id_articulo}"><i class="fa fa-trash" aria-hidden="true"></i>
+            </a></td></tr>`
+  })
+  tabla+= '</table>'
+  result.innerHTML = tabla
+
+
+}
+</script>

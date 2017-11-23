@@ -50,14 +50,14 @@ class Contable {
     return Promise.resolve(result)
   }
 
-  async getMovimientosByTipo (tipo) {
+  async getMovimientosByTipo (tipo, mes, anio) {
     let where = ''
     if(tipo) {
-      where = `WHERE id_tipo_fk = ${tipo}`
+      where = `WHERE id_tipo_fk = ${tipo} AND fecha >= '${anio}-${mes}-01' AND fecha <= '${anio}-${mes}-31'`
     }
     let connection = this.con
     let conn = await connection
-    let movimientos = await conn.query(`SELECT * FROM movimientos ${where}`)
+    let movimientos = await conn.query(`SELECT * FROM movimientos ${where} ORDER BY fecha`)
     if(!movimientos) {
       return Promise.reject(new Error('Ocurrio un error'))
     }

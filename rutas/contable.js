@@ -44,7 +44,7 @@ router.get('/consultas', ensureAuth, async (req, res) => {
 
 router.post('/consultas', async (req, res) => {
   const db = new Bd()
-  
+
   let listado = await db.getMovimientos()
   res.send({listado})
 })
@@ -65,21 +65,21 @@ router.get('/recibo/:id', async (req, res) => {
       ]
   }
   dateFormat.masks.largo = 'd " de " mmmm " de " yyyy'
-    
+
   let db = new Bd()
   let movimiento = (await db.getMovimientos(` WHERE id_movimiento = ${req.params.id}`))[0]
   let fecha = movimiento.fecha.getFullYear() + '-'
   + new Intl.NumberFormat("es-UY", {minimumIntegerDigits: 2}).format((movimiento.fecha.getMonth() + 1)) + '-' + new Intl.NumberFormat("es-UY", {minimumIntegerDigits: 2}).format(movimiento.fecha.getDate())
-  
+
   // Create a document
   let doc = new PDFDocument
-  
+
   // Pipe its output somewhere, like to a file or HTTP response
   // See below for browser usage
   res.setHeader('Content-disposition', 'attachment; filename="nombre.pdf"')
-  
+
   res.setHeader('Content-type', 'application/pdf')
-  
+
   doc.font('fonts/cabin/Cabin-Regular.ttf', 18)
     .fontSize(25)
     .text('RECIBO DE ENTREGA DE DINERO', 100, 50)
@@ -88,8 +88,8 @@ router.get('/recibo/:id', async (req, res) => {
   doc.moveDown()
     .text(`Recibí de Hogar de Ancianos de Lascano la suma de $ ${Math.abs(movimiento.importe)} (${letras(Math.abs(movimiento.importe))})
           por concepto de Entrega para depósito`)
-    
-  
+
+
   doc.moveDown()
   doc.moveDown()
   doc.moveDown()
@@ -100,7 +100,7 @@ router.get('/recibo/:id', async (req, res) => {
     .text('__________________________', 300)
   doc.moveDown()
     .text('Firma', 400)
-    
+
   /* doc.moveDown()
     .fillColor('black')
     .fontSize(15)
@@ -110,10 +110,28 @@ router.get('/recibo/:id', async (req, res) => {
       height: 300,
       ellipsis: true
     }) */
-        
+
   doc.pipe(res)
-    
+
   doc.end()
+})
+
+router.get('/mayores', async (req, res) => {
+  let db = new Bd()
+  let rubros = await db.getTipos()
+  res.render('contable-mayor', {rubros})
+})
+
+router.post('/mayores', async (req, res) => {
+  let db = new Bd()
+  let tipo = req.body.rubro
+  let anio = req.body.anio
+  let mes = req.body.mes
+  let movimientos = await db.getMovimientosByTipo(tipo, mes, anio)
+  movimientos.map(m => {
+    m.fecha = dateFormat(m.fecha, 'dd/mm/yyyy')
+  })
+  res.send({movimientos})
 })
 
 router.get('/movimientos', ensureAuth, async (req, res) => {

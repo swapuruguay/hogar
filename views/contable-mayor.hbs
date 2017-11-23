@@ -1,0 +1,64 @@
+<p>&nbsp;</p>
+<div class="row">
+  <form id="formulario" class="form-inline">
+
+    <div class="form-group">
+        <div class="col-sm-12">
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></div>
+            <select name="rubro" id="rubro" class="form-control" placeholder="Seleccionar">
+              {{#each rubros}}
+                <option value="{{id_tipo}}">{{tipo}}</option>
+              {{/each}}
+            </select>
+            <div class="input-group-addon"><label for="mes">Mes</label></div>
+            <input type="text" name="mes" id="mes" class="form-control">
+            <div class="input-group-addon"><label for="anio">Año</label></div>
+            <input type="text" name="anio" id="anio" class="form-control">
+
+          </div>
+          <input type="button" id="btn" class="btn btn-info" value="Buscar">
+        </div>
+      </div>
+  </form>
+  <div class="col-md-6">
+    <p></p>
+    <div id="result">
+
+    </div>
+  </div>
+</div>
+<script>
+  let btn =  document.getElementById('btn')
+  btn.addEventListener('click', async () => {
+    const tabla = document.getElementById('result')
+    const form = document.getElementById('formulario')
+    let formData = new FormData(form)
+    let res = await fetch('/contable/mayores', {
+      method: 'POST',
+      body: formData
+    })
+    let resultado = await res.json()
+    let texto = `<table id="tabla-mayor" class="table table-condensed table-striped table-bordered table-responsive" >
+      <tr>
+        <th>Concepto</th>
+        <th>Fecha</th>
+        <th>Importe</th>
+      </tr>`
+
+    if(resultado.movimientos.length > 0) {
+      let suma = 0
+      resultado.movimientos.forEach(m => {
+        texto+= `<tr><td>${m.concepto}</td><td>${m.fecha}</td><td class="text-right">${Math.abs(m.importe)}</td></tr>`
+        suma+= Math.abs(m.importe)
+      })
+      texto+= `<tr><td class="text-right" colspan=3>Total ==> ${suma}</td></tr>`
+      texto+= '</table>'
+      tabla.innerHTML = texto
+    } else {
+      tabla.innerHTML = ''
+    }
+
+  })
+
+</script>
