@@ -132,7 +132,6 @@ router.post('/saldo/', async function (req, res) {
   let id = req.body.id
   let db = new Bd()
   let result = await db.getCuotasPendientes(id)
-  console.log(result)
   db.disconnect()
   res.send({result})
 

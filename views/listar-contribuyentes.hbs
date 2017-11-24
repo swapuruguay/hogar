@@ -6,7 +6,7 @@
         <div class="col-sm-6">
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></div>
-            <input type="text" name="campo" id="campo" onkeyup="buscar()" class="form-control" placeholder="Buscar">
+            <input type="text" name="campo" id="campo" class="form-control" placeholder="Buscar">
           </div>
         </div>
 
@@ -40,6 +40,8 @@
   </div>
 </div>
 <script>
+  let c = document.getElementById('campo')
+  c.addEventListener('keyup', buscar)
   async function buscar() {
     let cadena = document.getElementById('campo').value
     //console.log('OKK')

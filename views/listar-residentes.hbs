@@ -40,6 +40,8 @@
   </div>
 </div>
 <script>
+  let c = document.getElementById('campo')
+  c.addEventListener('keyup', buscar)
   async function buscar() {
     let cadena = document.getElementById('campo').value
     let result = document.getElementById('result')
