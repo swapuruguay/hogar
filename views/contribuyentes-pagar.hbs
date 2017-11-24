@@ -28,32 +28,27 @@
 <script>
   let id = document.getElementById('id_contribuyente')
   let form = document.getElementById('form-pago')
-  form.addEventListener('submit', function(evt) {
+  form.addEventListener('submit', async function(evt) {
     evt.preventDefault()
     let fecha = document.getElementById('fecha')
     let datos = { id_contribuyente: id.value, fecha: fecha.value, importe: id.dataset.importe }
-    fetch('/contribuyentes/pagar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(datos),
-    })
-      .then(function(response) {
-        return response.json()
+    try {
+      let res = await fetch('/contribuyentes/pagar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datos),
       })
-      .then(function(data) {
-        //  nombre.innerHTML = `${data.nombre} ${data.apellido}`
-        if(data.filas == 0) {
-          document.getElementById('message').innerHTML = 'Error no hay Cuotas Pendientes'
-        } else {
-          document.getElementById('message').innerHTML = 'Ingreso Correcto'
-        }
-
-      })
-      .catch(function(err) {
-        console.log(err)
-      })
+      let respuesta = await res.json()
+      if(respuesta.filas == 0) {
+        document.getElementById('message').innerHTML = 'Error no hay Cuotas Pendientes'
+      } else {
+        document.getElementById('message').innerHTML = 'Ingreso Correcto'
+      }
+    } catch(err) {
+      console.log(err)
+    }
   })
 
   let nombre = document.getElementById('nombre')

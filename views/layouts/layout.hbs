@@ -10,7 +10,6 @@
   <title>Hogar de Ancianos</title>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
   <script src='/js/bootstrap.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/superagent/3.1.0/superagent.min.js'></script>
 
 </head>
 <body>
@@ -27,51 +26,37 @@
   </div>
     {{> footer }}
 
-  
+
   <script>
   let fgen = document.getElementById('form-ingresar-contribuyentes')
   let fedit = document.getElementById('form-editar-contribuyentes')
   if(fgen) {
-    fgen.addEventListener('submit', function(event){
+    fgen.addEventListener('submit', async event => {
       event.preventDefault()
       document.getElementById('resultado')
       //result.classList.add('loader')
       let formData = new FormData(fgen)
-      superagent
-        .post('/contribuyentes/add')
-        .send(formData)
-        .end(function(){
-        /* if(res.text == 'Ok') {*/
-          clearForm(fgen) 
-          //  } else {
-        //result.classList.remove('loader')
-        //result.innerHTML = res.text
-          //  }
-        })
-
-
+      let res = await fetch('/contribuyentes/add', {
+        method: 'POST',
+        body: formData
+      })
+      await res.json()
+      clearForm(fgen)
     })
 }
 
 if(fedit) {
-    fedit.addEventListener('submit', function(event){
+    fedit.addEventListener('submit', async event => {
       event.preventDefault()
       document.getElementById('resultado')
-      //  result.classList.add('loader')
+      //result.classList.add('loader')
       let formData = new FormData(fedit)
-      superagent
-        .post('/contribuyentes/editar')
-        .send(formData)
-        .end(function(){
-          /* if(res.text == 'Ok') {*/
-          clearForm(fedit)
-          //  } else {
-          //    result.classList.remove('loader')
-          //    result.innerHTML = res.text
-          //  }
-        })
-
-
+      let res = await fetch('/contribuyentes/edit', {
+        method: 'POST',
+        body: formData
+      })
+      await res.json()
+      clearForm(fedit)
     })
 }
 

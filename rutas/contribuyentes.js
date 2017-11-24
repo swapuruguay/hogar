@@ -128,12 +128,13 @@ router.get('/editar/:id', ensureAuth, async function  (req, res) {
 
 })
 
-router.get('/saldo/:id', ensureAuth, async function (req, res) {
-  let id = req.params.id
+router.post('/saldo/', async function (req, res) {
+  let id = req.body.id
   let db = new Bd()
   let result = await db.getCuotasPendientes(id)
+  console.log(result)
   db.disconnect()
-  res.send(result)
+  res.send({result})
 
 })
 

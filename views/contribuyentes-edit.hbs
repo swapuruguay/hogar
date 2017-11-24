@@ -90,7 +90,7 @@
         <span id="boton">Ver</span>
       </div>
     </div>
-    
+
    </div>
   </div>
 </div>
@@ -98,28 +98,30 @@
   let boton = document.getElementById('boton')
   boton.addEventListener('click' ,getSaldo)
 
-  function getSaldo() {
+  async function getSaldo() {
     let id = document.getElementById('id').value
     let result = document.getElementById('cuotas')
-    superagent
-      .get(`/contribuyentes/saldo/${id}`)
-      .end(function(err, data) {
-        let texto = ''
-        if(!err) {
-          let importe = 0
-          texto += `<table class='table'>
-                    <tr><th>Mes de cargo</th><th>Importe</th></tr>`
-          data.body.forEach(function(c) {
-            texto+= `<tr><td>${c.mes}/${c.anio}</td><td>${c.importe}</td></tr>`
-            importe+= c.importe
-          })
-            texto+=`<tr><td>Total</td><td>${importe}</td></tr>`
-          texto+= '</table>'
-
-          result.innerHTML = texto
-        }
-      })
+    let formData = new FormData()
+    formData.append('id', id)
+    let res = await fetch('/contribuyentes/saldo/', {
+      method: 'POST',
+      body: formData
+    })
+    let respuesta = await res.json()
+    let importe = 0
+    let texto = ''
+    console.log(respuesta)
+    texto += `<table class='table'>
+              <tr><th>Mes de cargo</th><th>Importe</th></tr>`
+    respuesta.result.forEach(function(c) {
+      texto+= `<tr><td>${c.mes}/${c.anio}</td><td>${c.importe}</td></tr>`
+      importe+= c.importe
+    })
+    texto+=`<tr><td>Total</td><td>${importe}</td></tr>`
+    texto+= '</table>'
+    result.innerHTML = texto
   }
+
 
 
 
