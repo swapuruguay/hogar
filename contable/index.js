@@ -76,6 +76,16 @@ class Contable {
     return Promise.resolve(movimientos)
   }
 
+  async getMovimiento (id) {
+    let connection = this.con
+    let conn = await connection
+    let movimientos = await conn.query(`SELECT * FROM movimientos WHERE id_movimiento = ${id}`)
+    if(!movimientos) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(movimientos)
+  }
+
   async getTipos () {
     let connection = this.con
     let conn = await connection

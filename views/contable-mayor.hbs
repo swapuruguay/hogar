@@ -44,12 +44,17 @@
         <th>Concepto</th>
         <th>Fecha</th>
         <th>Importe</th>
+        <th></th>
       </tr>`
 
     if(resultado.movimientos.length > 0) {
       let suma = 0
       resultado.movimientos.forEach(m => {
-        texto+= `<tr><td>${m.concepto}</td><td>${m.fecha}</td><td class="text-right">${Math.abs(m.importe)}</td></tr>`
+        texto+= `<tr><td>${m.concepto}</td><td>${m.fecha}</td><td class="text-right">${Math.abs(m.importe)}</td>`
+        if(m.id_tipo_fk !== 1) {
+
+          texto+=`<td class="text-center"><a href="/contable/change/${m.id_movimiento}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td></tr>`
+        }
         suma+= Math.abs(m.importe)
       })
       texto+= `<tr><td class="text-right" colspan=3>Total ==> ${suma}</td></tr>`

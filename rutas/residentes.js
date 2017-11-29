@@ -173,8 +173,8 @@ function convertFecha(fecha) {
 }
 
 function revertirFecha(row) {
-  let fecha = new Intl.NumberFormat("es-UY", {minimumIntegerDigits: 2}).format(row.getDate()) + '/'
-  + new Intl.NumberFormat("es-UY", {minimumIntegerDigits: 2}).format((row.getMonth() + 1)) + '/' + row.getFullYear()
+  let fecha = new Intl.NumberFormat('es-UY', {minimumIntegerDigits: 2}).format(row.getDate()) + '/'
+  + new Intl.NumberFormat('es-UY', {minimumIntegerDigits: 2}).format((row.getMonth() + 1)) + '/' + row.getFullYear()
 
   return fecha
 }

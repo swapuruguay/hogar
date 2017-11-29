@@ -2,10 +2,10 @@
 
 import express from 'express'
 const router = express.Router()
-import dateFormat from 'dateformat-light'
+//import dateFormat from 'dateformat-light'
 import Bd from '../articulos'
 import medidas from '../articulos/medidas'
-import PDFDocument from 'pdfkit'
+//import PDFDocument from 'pdfkit'
 //import BDIng from '../ingresos'
 import formData from 'express-form-data'
 // parsing data with connect-multiparty. Result set on req.body and req.files
@@ -47,4 +47,3 @@ router.post('/', async (req, res) => {
 })
 
 export default router
-
