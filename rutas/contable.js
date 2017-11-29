@@ -152,6 +152,7 @@ router.get('/change/:id', ensureAuth, async (req, res) => {
   let db = new Bd()
   let tipos = await db.getTipos()
   let m = (await db.getMovimiento(id))[0]
+  m.importe = Math.abs(m.importe)
   m.tipos = tipos.filter(t => t.tipo !== 'Cuota')
   m.fecha = dateFormat(m.fecha, 'dd/mm/yyyy')
   m.tipos.map(t => {
@@ -162,7 +163,6 @@ router.get('/change/:id', ensureAuth, async (req, res) => {
     }
     return t
   })
-  console.log(m)
   db.disconnect()
   res.render('movimientos-change', {m})
 })
