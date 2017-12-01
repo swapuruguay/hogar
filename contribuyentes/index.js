@@ -17,12 +17,15 @@ class Contribuyentes {
       password: config.password,
       database: config.database
     }
+    try {
 
-    this.con = mysql.createConnection(options)
+      this.con = mysql.createConnection(options)
 
-    let connection = this.con
-
-    return Promise.resolve(connection)
+      let connection = this.con
+      return Promise.resolve(connection)
+    } catch(err) {
+      console.error(err)
+    }
   }
 
   async disconnect() {
@@ -35,9 +38,13 @@ class Contribuyentes {
   async getContribuyentes(where, order) {
     let cond = where || ''
     let orden = order || ''
-
-
-    let connection = this.con
+    let connection = null
+    try {
+      connection = this.con
+    } catch(err) {
+      console.eror(err)
+    }
+    //let connection = this.con
 
     //let task = co.wrap(function * () {
     let conn = await connection
@@ -172,7 +179,18 @@ class Contribuyentes {
     let conn = await connection
     let contris =  await conn.query(`UPDATE contribuyentes SET estado = 0 WHERE id_contribuyente = ${idContribuyente}`)
     if(!contris) {
-      return Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(contris)
+  }
+
+  async getGenerado(mes, anio) {
+    let connection = this.con
+
+    let conn = await connection
+    let contris =  await conn.query(`SELECT * FROM mesesgenerados WHERE anio=${anio} AND mes = ${mes}`)
+    if(!contris) {
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
   }
@@ -183,7 +201,7 @@ class Contribuyentes {
     let conn = await connection
     let contris =  await conn.query(`SELECT * FROM cuotas WHERE estado = 1 AND id_contribuyente_fk = ${idContribuyente}`)
     if(!contris) {
-      return Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
 
@@ -196,7 +214,7 @@ class Contribuyentes {
     let conn = await connection
     let contris = await conn.query(`SELECT * FROM cuotas WHERE mes = ${mes} AND anio = ${anio}`)
     if(!contris) {
-      return Promise.rejetc(new Error('Ocurrio un error'))
+      return Promise.reject(new Error('Ocurrio un error'))
     }
     return Promise.resolve(contris)
 

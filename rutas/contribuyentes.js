@@ -40,6 +40,7 @@ router.get('/listar', ensureAuth, async function(req, res) {
 
   } catch(err) {
     console.log(err.message)
+    res.end('Ocurrio un error')
   }
 })
 
@@ -169,24 +170,30 @@ router.get('/eliminar/:id', async function(req, res) {
 router.post('/generar', async function  (req, res) {
   let db = new Bd()
   let {mes, anio} = req.body
-  let contris = await db.getContribuyentes(' WHERE estado = 1')
-  let fecha = new Date().toJSON().slice(0,10)
-  let filas = []
-  /*
-  await Promise.all(contris.forEach(async function(el) {
+  let existe = await db.getGenerado(mes, anio)
+  if(existe.length < 1) {
+    let contris = await db.getContribuyentes(' WHERE estado = 1')
+    let fecha = new Date().toJSON().slice(0,10)
+    let filas = []
+    /*
+    await Promise.all(contris.forEach(async function(el) {
     let cat = (await db.getCategoria(el.id_categoria_fk))[0]
     filas.push([el.id_contribuyente, mes, anio, cat.importe, 0, fecha])
 
   }))
   */
-  for(let c of contris) {
-    let cat = (await db.getCategoria(c.id_categoria_fk))[0]
-    filas.push([c.id_contribuyente, mes, anio, cat.importe, 1, fecha])
+    for(let c of contris) {
+      let cat = (await db.getCategoria(c.id_categoria_fk))[0]
+      filas.push([c.id_contribuyente, mes, anio, cat.importe, 1, fecha])
+    }
+    //console.log(filas)
+    await db.generarCuotas(filas)
+    db.disconnect()
+
+    res.send('Mes generado con éxito')
+  } else {
+    res.send('El mes ya fue generado')
   }
-  //console.log(filas)
-  await db.generarCuotas(filas)
-  db.disconnect()
-  res.send('Mes generado con éxito')
 
 })
 
