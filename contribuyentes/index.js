@@ -245,6 +245,17 @@ class Contribuyentes {
     return Promise.resolve(result)
   }
 
+  async grabarMes(mes, anio) {
+    let connection = this.con
+    let conn = await connection
+    let sql = 'INSERT INTO mesesgenerados SET ?'
+    let result = await conn.query(sql, {mes, anio})
+    if(!result) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(result)
+  }
+
   async getDeudores() {
     let connection = this.con
 

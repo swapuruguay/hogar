@@ -188,6 +188,7 @@ router.post('/generar', async function  (req, res) {
     }
     //console.log(filas)
     await db.generarCuotas(filas)
+    await db.grabarMes(mes, anio)
     db.disconnect()
 
     res.send('Mes generado con éxito')
