@@ -51,7 +51,7 @@ if(fedit) {
       document.getElementById('resultado')
       //result.classList.add('loader')
       let formData = new FormData(fedit)
-      let res = await fetch('/contribuyentes/edit', {
+      let res = await fetch('/contribuyentes/editar', {
         method: 'POST',
         body: formData
       })
