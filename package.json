@@ -25,7 +25,7 @@
     "dateformat-light": "^1.0.17",
     "express": "^4.14.0",
     "express-form-data": "^1.0.0",
-    "express-handlebars": "^3.0.0",
+    "express-handlebars": "^5.3.1",
     "express-session": "^1.14.2",
     "handlebars": "^4.0.6",
     "mysql": "^2.12.0",
