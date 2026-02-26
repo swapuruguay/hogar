@@ -3,7 +3,7 @@
 import express from 'express'
 const router = express.Router()
 import formData from 'express-form-data'
-import Bd from '../residentes'
+import Bd from '../residentes/index.js'
 
 
 // parsing data with connect-multiparty. Result set on req.body and req.files

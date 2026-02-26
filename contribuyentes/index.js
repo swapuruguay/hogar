@@ -1,7 +1,7 @@
 'use strict'
 
 import mysql from 'promise-mysql'
-import config from '../config'
+import config from '../config.js'
 
 class Contribuyentes {
 

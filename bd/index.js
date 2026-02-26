@@ -1,5 +1,5 @@
 import mysql from 'promise-mysql'
-import config from '../config'
+import config from '../config.js'
 
 class Bd {
 
@@ -42,6 +42,20 @@ class Bd {
       return Promise.resolve(user)
     }
     return Promise.resolve(task())
+  }
+
+  async updateUserPassword(idUsuario, passwordHash) {
+    const connection = this.con
+    const conn = await connection
+    const result = await conn.query(
+      'UPDATE usuarios SET password = ? WHERE id_usuario = ?',
+      [passwordHash, idUsuario]
+    )
+
+    if (!result) {
+      return Promise.reject(new Error('No se pudo actualizar la contraseña'))
+    }
+    return Promise.resolve(result)
   }
 }
 

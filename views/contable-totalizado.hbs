@@ -1,0 +1,71 @@
+<p>&nbsp;</p>
+<div class="row">
+  <form id="form-totalizado" class="form-inline">
+    <div class="form-group">
+      <div class="col-sm-12">
+        <div class="input-group">
+          <div class="input-group-addon"><label for="mes">Mes</label></div>
+          <input type="text" name="mes" id="mes" class="form-control" placeholder="MM">
+          <div class="input-group-addon"><label for="anio">Año</label></div>
+          <input type="text" name="anio" id="anio" class="form-control" placeholder="YYYY">
+        </div>
+        <input type="button" id="btn-totalizado" class="btn btn-info" value="Buscar">
+        <input type="button" id="btn-excel" class="btn btn-success" value="Exportar Excel">
+      </div>
+    </div>
+  </form>
+  <div class="col-md-7">
+    <p></p>
+    <div id="result-totalizado"></div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('btn-totalizado')
+  const btnExcel = document.getElementById('btn-excel')
+  btn.addEventListener('click', async () => {
+    const tabla = document.getElementById('result-totalizado')
+    const form = document.getElementById('form-totalizado')
+    const formData = new FormData(form)
+    const res = await fetch('/contable/totalizado', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (!res.ok) {
+      tabla.innerHTML = '<div class="alert alert-danger">Mes o año inválido.</div>'
+      return
+    }
+
+    const resultado = await res.json()
+    let html = `<table class="table table-condensed table-striped table-bordered table-responsive">
+      <tr>
+        <th>Rubro</th>
+        <th class="text-right">Importe</th>
+      </tr>`
+
+    let total = 0
+    resultado.rubros.forEach((rubro) => {
+      const importe = Number(rubro.importe || 0)
+      total += importe
+      html += `<tr><td>${rubro.tipo}</td><td class="text-right">${importe.toFixed(2)}</td></tr>`
+    })
+    html += `<tr><td class="text-right"><strong>Total</strong></td><td class="text-right"><strong>${total.toFixed(2)}</strong></td></tr>`
+    html += '</table>'
+
+    tabla.innerHTML = html
+  })
+
+  btnExcel.addEventListener('click', () => {
+    const mes = document.getElementById('mes').value.trim()
+    const anio = document.getElementById('anio').value.trim()
+    const mesOk = /^\d{1,2}$/.test(mes)
+    const anioOk = /^\d{4}$/.test(anio)
+    if (!mesOk || !anioOk) {
+      alert('Ingrese mes y año válidos.')
+      return
+    }
+    const mesPad = mes.padStart(2, '0')
+    window.location.href = `/contable/totalizado/excel?mes=${encodeURIComponent(mesPad)}&anio=${encodeURIComponent(anio)}`
+  })
+</script>

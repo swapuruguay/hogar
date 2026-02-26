@@ -3,7 +3,7 @@
 import express from 'express'
 const router = express.Router()
 import dateFormat from 'dateformat-light'
-import Bd from '../contable'
+import Bd from '../contable/index.js'
 import PDFDocument from 'pdfkit'
 import formData from 'express-form-data'
 import letras from '../utils/nrosALetras.js'
@@ -136,6 +136,53 @@ router.post('/mayores', async (req, res) => {
   })
   db.disconnect()
   res.send({movimientos})
+})
+
+router.get('/totalizado', ensureAuth, (req, res) => {
+  res.render('contable-totalizado')
+})
+
+router.post('/totalizado', ensureAuth, async (req, res) => {
+  let {mes, anio} = req.body
+  mes = String(mes || '').padStart(2, '0')
+  anio = String(anio || '')
+  if(!/^\d{2}$/.test(mes) || !/^\d{4}$/.test(anio)) {
+    return res.status(400).send({error: 'Mes o año inválido'})
+  }
+
+  let db = new Bd()
+  let rubros = await db.getTotalesPorRubros(mes, anio)
+  db.disconnect()
+  res.send({rubros})
+})
+
+router.get('/totalizado/excel', ensureAuth, async (req, res) => {
+  let {mes, anio} = req.query
+  mes = String(mes || '').padStart(2, '0')
+  anio = String(anio || '')
+  if(!/^\d{2}$/.test(mes) || !/^\d{4}$/.test(anio)) {
+    return res.status(400).send('Mes o año inválido')
+  }
+
+  let db = new Bd()
+  let rubros = await db.getTotalesPorRubros(mes, anio)
+  db.disconnect()
+
+  let total = 0
+  const escapeCsv = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`
+  const rows = ['Rubro,Importe']
+  rubros.forEach((rubro) => {
+    const importe = Number(rubro.importe || 0)
+    total += importe
+    rows.push(`${escapeCsv(rubro.tipo)},${importe.toFixed(2)}`)
+  })
+  rows.push(`${escapeCsv('Total')},${total.toFixed(2)}`)
+
+  const csv = rows.join('\n')
+  const filename = `totalizado-rubros-${anio}-${mes}.csv`
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+  res.send(csv)
 })
 
 router.get('/movimientos', ensureAuth, async (req, res) => {

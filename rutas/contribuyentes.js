@@ -2,8 +2,8 @@
 
 import express from 'express'
 const router = express.Router()
-import Bd from '../contribuyentes'
-import BDIng from '../contable'
+import Bd from '../contribuyentes/index.js'
+import BDIng from '../contable/index.js'
 import formData from 'express-form-data'
 
 // parsing data with connect-multiparty. Result set on req.body and req.files

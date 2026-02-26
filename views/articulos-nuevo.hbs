@@ -3,22 +3,23 @@
     <div class="row">
         <div class="col-md-6" >
           <form id="formulario"  class="form-horizontal">
+            <input type="hidden" name="id_articulo" id="id_articulo" value="{{articulo.id_articulo}}">
             <div class="form-group">
               <label for="codigo" class="col-md-12">C&oacute;digo</label>
               <div class="col-md-3">
-                <input type="text" name="codigo" id="codigo" class="form-control">
+                <input type="text" name="codigo" id="codigo" class="form-control" value="{{articulo.codigo}}">
               </div>
             </div>
             <div class="form-group">
               <label for="nombre" class="col-md-12">Nombre</label>
               <div class="col-md-6">
-                <input type="text" name="nombre" id="nombre" class="form-control">
+                <input type="text" name="nombre" id="nombre" class="form-control" value="{{articulo.nombre}}">
               </div>
             </div>
             <div class="form-group">
               <label for="descripcion" class="col-md-12">Descripci&oacute;n</label>
               <div class="col-md-12">
-                <input type="text" name="descripcion" id="descripcion" class="form-control">
+                <input type="text" name="descripcion" id="descripcion" class="form-control" value="{{articulo.descripcion}}">
               </div>
             </div>
             <div class="form-group">
@@ -26,7 +27,7 @@
               <div class="col-md-6">
                 <select name="medida" id="medida" class="form-control">
                   {{#each lista}}
-                      <option value="{{id_medida}}">{{abreviatura}}</option>
+                      <option value="{{id_medida}}" {{selected}}>{{abreviatura}}</option>
                   {{/each}}
                 </select>
               </div>
@@ -34,7 +35,7 @@
             <div class="form-group">
               <label for="minimo" class="col-md-12">Stock M&iacute;nimo</label>
                 <div class="col-md-6">
-                  <input type="text" name="minimo" id="minimo" class="form-control">
+                  <input type="text" name="minimo" id="minimo" class="form-control" value="{{articulo.minimo}}">
                 </div>
             </div>
             <button class="btn btn-success" type="submit">Guardar</button>
@@ -50,12 +51,15 @@
     form.addEventListener('submit', async (evt) => {
       evt.preventDefault()
       let data = new FormData(form)
+      const isEdit = Number(document.getElementById('id_articulo').value || 0) > 0
+      const endpoint = isEdit ? '/articulos/editar' : '/articulos/'
       try {
-        let res = await fetch('/articulos/', {
+        let res = await fetch(endpoint, {
           method: 'POST',
           body: data
         })
-        let respuesta = await res.json()
+        await res.json()
+        window.location.href = '/articulos/listar'
       } catch(err) {
         console.error(err)
       }

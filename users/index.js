@@ -1,5 +1,4 @@
-const co = require('co')
-const mysql = require('promise-mysql')
+import mysql from 'promise-mysql'
 
 
 class User {
@@ -18,4 +17,4 @@ class User {
   
 }
 
-module.exports = User
+export default User

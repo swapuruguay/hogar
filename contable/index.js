@@ -1,7 +1,7 @@
 'use strict'
 
 import mysql from 'promise-mysql'
-import config from '../config'
+import config from '../config.js'
 
 class Contable {
 
@@ -104,6 +104,26 @@ class Contable {
       return Promise.reject(new Error('No existen Datos'))
     }
     return Promise.resolve(saldo)
+  }
+
+  async getTotalesPorRubros(mes, anio) {
+    const connection = this.con
+    const conn = await connection
+    const fechaDesde = `${anio}-${mes}-01`
+    const fechaHasta = `${anio}-${mes}-31`
+    const sql = `SELECT t.id_tipo, t.tipo, t.lado, COALESCE(SUM(m.importe), 0) AS importe
+      FROM tipos_movimientos t
+      LEFT JOIN movimientos m
+        ON m.id_tipo_fk = t.id_tipo
+        AND m.fecha >= ?
+        AND m.fecha <= ?
+      GROUP BY t.id_tipo, t.tipo, t.lado
+      ORDER BY t.tipo`
+    const rubros = await conn.query(sql, [fechaDesde, fechaHasta])
+    if(!rubros) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(rubros)
   }
 }
 

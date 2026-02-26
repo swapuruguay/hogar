@@ -1,6 +1,5 @@
-
-const mysql = require('promise-mysql')
-let config = require('../config')
+import mysql from 'promise-mysql'
+import config from '../config.js'
 
 class Residentes {
 
@@ -130,4 +129,4 @@ class Residentes {
 
 }
 
-module.exports = Residentes
+export default Residentes
