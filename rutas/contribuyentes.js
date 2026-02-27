@@ -4,6 +4,7 @@ import express from 'express'
 const router = express.Router()
 import Bd from '../contribuyentes/index.js'
 import BDIng from '../contable/index.js'
+import PDFDocument from 'pdfkit'
 import formData from 'express-form-data'
 
 // parsing data with connect-multiparty. Result set on req.body and req.files
@@ -169,33 +170,93 @@ router.get('/eliminar/:id', async function(req, res) {
 
 router.post('/generar', async function  (req, res) {
   let db = new Bd()
-  let {mes, anio} = req.body
-  let existe = await db.getGenerado(mes, anio)
-  if(existe.length < 1) {
-    let contris = await db.getContribuyentes(' WHERE estado = 1')
-    let fecha = new Date().toJSON().slice(0,10)
-    let filas = []
-    /*
-    await Promise.all(contris.forEach(async function(el) {
-    let cat = (await db.getCategoria(el.id_categoria_fk))[0]
-    filas.push([el.id_contribuyente, mes, anio, cat.importe, 0, fecha])
-
-  }))
-  */
-    for(let c of contris) {
-      let cat = (await db.getCategoria(c.id_categoria_fk))[0]
-      filas.push([c.id_contribuyente, mes, anio, cat.importe, 1, fecha])
+  try {
+    let mes = Number(req.body.mes)
+    let anio = Number(req.body.anio)
+    if(!Number.isInteger(mes) || !Number.isInteger(anio) || mes < 1 || mes > 12 || anio < 2000) {
+      db.disconnect()
+      return res.status(400).send('Mes o año inválido')
     }
-    //console.log(filas)
-    await db.generarCuotas(filas)
-    await db.grabarMes(mes, anio)
+
+    let existe = await db.getGenerado(mes, anio)
+    if(existe.length < 1) {
+      let contris = await db.getContribuyentes(' WHERE estado = 1')
+      let fecha = new Date().toJSON().slice(0,10)
+      let filas = []
+      for(let c of contris) {
+        let cat = (await db.getCategoria(c.id_categoria_fk))[0]
+        filas.push([c.id_contribuyente, mes, anio, cat.importe, 1, fecha])
+      }
+      await db.generarCuotas(filas)
+      await db.grabarMes(mes, anio)
+    }
+
+    let cuotas = await db.getCuotasParaImprimir(mes, anio)
     db.disconnect()
+    if(cuotas.length < 1) {
+      return res.status(404).send('No hay cuotas para ese mes')
+    }
 
-    res.send('Mes generado con éxito')
-  } else {
-    res.send('El mes ya fue generado')
+    let doc = new PDFDocument({size: 'A4', margin: 30})
+    let mesTexto = `${String(mes).padStart(2, '0')}/${anio}`
+    let fileMes = String(mes).padStart(2, '0')
+    let fileAnio = String(anio)
+    let formatImporte = (valor) => String(Math.round(Number(valor || 0)))
+
+    res.setHeader('Content-disposition', `attachment; filename="cuotas-${fileAnio}-${fileMes}.pdf"`)
+    res.setHeader('Content-type', 'application/pdf')
+    doc.pipe(res)
+
+    const cardsPerPage = 6
+    const rows = 6
+    const contentWidth = doc.page.width - (doc.page.margins.left + doc.page.margins.right)
+    const contentHeight = doc.page.height - (doc.page.margins.top + doc.page.margins.bottom)
+    const cardWidth = contentWidth
+    const cardHeight = contentHeight / rows
+
+    const drawCard = (cuota, x, y) => {
+      const talonWidth = cardWidth / 3
+      const reciboWidth = cardWidth - talonWidth
+      const sectionPad = 8
+      const nombre = `${cuota.nombre} ${cuota.apellido}`.trim()
+      const importe = formatImporte(cuota.importe)
+
+      doc.rect(x, y, cardWidth, cardHeight).stroke()
+      doc.moveTo(x + talonWidth, y).lineTo(x + talonWidth, y + cardHeight).stroke()
+
+      doc.font('fonts/cabin/Cabin-Bold.ttf').fontSize(13)
+      doc.text(`Nro. ${cuota.id_contribuyente_fk}`, x + sectionPad, y + 28, {width: talonWidth - (sectionPad * 2)})
+      doc.font('fonts/cabin/Cabin-Regular.ttf').fontSize(10)
+      doc.text(`Nombre: ${nombre}`, x + sectionPad, y + 44, {width: talonWidth - (sectionPad * 2)})
+      doc.text(`Mes ${mesTexto}`, x + sectionPad, y + 76, {width: talonWidth - (sectionPad * 2)})
+      doc.text(`Importe $${importe}`, x + sectionPad, y + 92, {width: talonWidth - (sectionPad * 2)})
+
+      doc.font('fonts/cabin/Cabin-Bold.ttf').fontSize(12)
+      doc.text('HOGAR DE ANCIANOS', x + talonWidth + sectionPad, y + sectionPad, {width: reciboWidth - (sectionPad * 2), align: 'center'})
+      doc.font('fonts/cabin/Cabin-Regular.ttf').fontSize(10)
+      doc.text(nombre, x + talonWidth + sectionPad, y + 44, {width: reciboWidth - (sectionPad * 2), align: 'center'})
+      doc.text(`Mes ${mesTexto}`, x + talonWidth + sectionPad, y + 76, {width: reciboWidth - (sectionPad * 2)})
+      doc.font('fonts/cabin/Cabin-Bold.ttf').fontSize(14)
+      doc.text(`$${importe}`, x + talonWidth + sectionPad, y + 98, {width: reciboWidth - (sectionPad * 2), align: 'right'})
+    }
+
+    cuotas.forEach((cuota, i) => {
+      if(i > 0 && i % cardsPerPage === 0) {
+        doc.addPage()
+      }
+
+      const iPage = i % cardsPerPage
+      const x = doc.page.margins.left
+      const y = doc.page.margins.top + (iPage * cardHeight)
+      drawCard(cuota, x, y)
+    })
+
+    doc.end()
+  } catch(err) {
+    console.log(err.message)
+    db.disconnect()
+    res.status(500).send('Ocurrio un error al generar el PDF')
   }
-
 })
 
 router.post('/pagar', async (req, res) => {

@@ -220,6 +220,22 @@ class Contribuyentes {
 
   }
 
+  async getCuotasParaImprimir(mes, anio) {
+    let connection = this.con
+    let conn = await connection
+    let sql = `SELECT cu.id_cuota, cu.id_contribuyente_fk, cu.mes, cu.anio, cu.importe,
+                      c.nombre, c.apellido
+               FROM cuotas cu
+               JOIN contribuyentes c ON c.id_contribuyente = cu.id_contribuyente_fk
+               WHERE cu.mes = ${mes} AND cu.anio = ${anio}
+               ORDER BY cu.id_contribuyente_fk, cu.id_cuota`
+    let cuotas = await conn.query(sql)
+    if(!cuotas) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(cuotas)
+  }
+
   async generarCli(lista) {
     let connection = this.con
 
