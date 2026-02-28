@@ -96,6 +96,53 @@ class Contable {
     return Promise.resolve(tipos)
   }
 
+  async getTipo(id) {
+    let connection = this.con
+    let conn = await connection
+    let tipos = await conn.query(`SELECT * FROM tipos_movimientos WHERE id_tipo = ${id}`)
+    if(!tipos) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(tipos)
+  }
+
+  async saveTipo(tipo) {
+    let connection = this.con
+    let conn = await connection
+    let id = Number(tipo.id_tipo || 0)
+    let sql = ''
+    if(id === 0) {
+      sql = 'INSERT INTO tipos_movimientos SET ?'
+    } else {
+      sql = `UPDATE tipos_movimientos SET ? WHERE id_tipo = ${id}`
+    }
+    let result = await conn.query(sql, tipo)
+    if(!result) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(result)
+  }
+
+  async getMovimientosCountByTipo(idTipo) {
+    let connection = this.con
+    let conn = await connection
+    let result = await conn.query(`SELECT COUNT(*) AS cantidad FROM movimientos WHERE id_tipo_fk = ${idTipo}`)
+    if(!result) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(result)
+  }
+
+  async deleteTipo(idTipo) {
+    let connection = this.con
+    let conn = await connection
+    let result = await conn.query(`DELETE FROM tipos_movimientos WHERE id_tipo = ${idTipo}`)
+    if(!result) {
+      return Promise.reject(new Error('Ocurrio un error'))
+    }
+    return Promise.resolve(result)
+  }
+
   async getSaldoCaja() {
     let connection = this.con
     let conn = await connection

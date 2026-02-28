@@ -42,6 +42,85 @@ router.get('/consultas', ensureAuth, async (req, res) => {
   res.render('consultas')
 })
 
+router.get('/conceptos', ensureAuth, async (req, res) => {
+  let db = new Bd()
+  let tipos = await db.getTipos()
+  db.disconnect()
+  tipos = tipos.map((t) => {
+    t.lado_txt = t.lado === 'D' ? 'Debe' : 'Haber'
+    return t
+  })
+  res.render('rubros-listar', {
+    titulo: 'Conceptos contables',
+    tipos,
+    mensaje: req.query.mensaje || '',
+    error: req.query.error || ''
+  })
+})
+
+router.get('/conceptos/nuevo', ensureAuth, (req, res) => {
+  let concepto = {
+    id_tipo: 0,
+    tipo: '',
+    ladoD: 'SELECTED',
+    ladoH: ''
+  }
+  res.render('rubros-nuevo', {titulo: 'Nuevo concepto', concepto})
+})
+
+router.get('/conceptos/editar/:id', ensureAuth, async (req, res) => {
+  let id = Number(req.params.id)
+  if(!Number.isInteger(id) || id <= 0) {
+    return res.redirect('/contable/conceptos?error=Id+inv%C3%A1lido')
+  }
+
+  let db = new Bd()
+  let concepto = (await db.getTipo(id))[0]
+  db.disconnect()
+  if(!concepto) {
+    return res.redirect('/contable/conceptos?error=Concepto+no+encontrado')
+  }
+  concepto.ladoD = concepto.lado === 'D' ? 'SELECTED' : ''
+  concepto.ladoH = concepto.lado === 'H' ? 'SELECTED' : ''
+  res.render('rubros-nuevo', {titulo: 'Editar concepto', concepto})
+})
+
+router.post('/conceptos/guardar', ensureAuth, async (req, res) => {
+  let id_tipo = Number(req.body.id_tipo || 0)
+  let tipo = String(req.body.tipo || '').trim()
+  let lado = String(req.body.lado || '').trim().toUpperCase()
+
+  if(tipo.length < 2 || (lado !== 'D' && lado !== 'H')) {
+    return res.redirect('/contable/conceptos?error=Datos+inv%C3%A1lidos')
+  }
+
+  let db = new Bd()
+  let datos = {tipo, lado}
+  if(id_tipo > 0) {
+    datos.id_tipo = id_tipo
+  }
+  await db.saveTipo(datos)
+  db.disconnect()
+  res.redirect('/contable/conceptos?mensaje=Concepto+guardado')
+})
+
+router.get('/conceptos/eliminar/:id', ensureAuth, async (req, res) => {
+  let id = Number(req.params.id)
+  if(!Number.isInteger(id) || id <= 0) {
+    return res.redirect('/contable/conceptos?error=Id+inv%C3%A1lido')
+  }
+
+  let db = new Bd()
+  let usados = await db.getMovimientosCountByTipo(id)
+  if(Number(usados[0].cantidad) > 0) {
+    db.disconnect()
+    return res.redirect('/contable/conceptos?error=No+se+puede+eliminar%2C+tiene+movimientos+asociados')
+  }
+  await db.deleteTipo(id)
+  db.disconnect()
+  res.redirect('/contable/conceptos?mensaje=Concepto+eliminado')
+})
+
 router.post('/consultas', async (req, res) => {
   const db = new Bd()
 

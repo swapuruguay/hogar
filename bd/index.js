@@ -57,6 +57,20 @@ class Bd {
     }
     return Promise.resolve(result)
   }
+
+  async updateUserData(idUsuario, nombre, apellido, username) {
+    const connection = this.con
+    const conn = await connection
+    const result = await conn.query(
+      'UPDATE usuarios SET nombre = ?, apellido = ?, username = ? WHERE id_usuario = ?',
+      [nombre, apellido, username, idUsuario]
+    )
+
+    if(!result) {
+      return Promise.reject(new Error('No se pudo actualizar el usuario'))
+    }
+    return Promise.resolve(result)
+  }
 }
 
 export default Bd

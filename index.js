@@ -98,6 +98,46 @@ app.get('/cuenta/password', ensureAuth, (req, res) => {
   })
 })
 
+app.get('/cuenta/datos', ensureAuth, (req, res) => {
+  res.render('cuenta-datos', {
+    user: req.user,
+    error: req.flash('error'),
+    ok: req.flash('ok')
+  })
+})
+
+app.post('/cuenta/datos', ensureAuth, async (req, res) => {
+  const nombre = String(req.body.nombre || '').trim()
+  const apellido = String(req.body.apellido || '').trim()
+  const username = String(req.body.username || '').trim()
+
+  if(!nombre || !apellido || !username) {
+    req.flash('error', 'Nombre, apellido y usuario son obligatorios.')
+    return res.redirect('/cuenta/datos')
+  }
+  if(!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
+    req.flash('error', 'Usuario inválido. Use 3-30 caracteres: letras, números, punto, guion o guion bajo.')
+    return res.redirect('/cuenta/datos')
+  }
+
+  const db = new Db()
+  const duplicado = await db.getUser(` WHERE username = '${username}' AND id_usuario <> ${Number(req.user.id_usuario)}`)
+  if(duplicado.length > 0) {
+    await db.disconnect()
+    req.flash('error', 'El nombre de usuario ya está en uso.')
+    return res.redirect('/cuenta/datos')
+  }
+
+  await db.updateUserData(Number(req.user.id_usuario), nombre, apellido, username)
+  await db.disconnect()
+
+  req.user.nombre = nombre
+  req.user.apellido = apellido
+  req.user.username = username
+  req.flash('ok', 'Datos actualizados correctamente.')
+  res.redirect('/cuenta/datos')
+})
+
 app.post('/cuenta/password', ensureAuth, async (req, res) => {
   const { actual, nueva, confirmar } = req.body
 

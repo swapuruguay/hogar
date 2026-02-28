@@ -173,8 +173,29 @@ function convertFecha(fecha) {
 }
 
 function revertirFecha(row) {
-  let fecha = new Intl.NumberFormat('es-UY', {minimumIntegerDigits: 2}).format(row.getDate()) + '/'
-  + new Intl.NumberFormat('es-UY', {minimumIntegerDigits: 2}).format((row.getMonth() + 1)) + '/' + row.getFullYear()
+  if(!row) {
+    return ''
+  }
+
+  let fechaObj = row
+  if(!(fechaObj instanceof Date)) {
+    const texto = String(row)
+    if(/^\d{4}-\d{2}-\d{2}/.test(texto)) {
+      const partes = texto.slice(0, 10).split('-')
+      fechaObj = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]))
+    } else if(/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+      return texto
+    } else {
+      const intento = new Date(texto)
+      if(Number.isNaN(intento.getTime())) {
+        return ''
+      }
+      fechaObj = intento
+    }
+  }
+
+  let fecha = new Intl.NumberFormat('es-UY', {minimumIntegerDigits: 2}).format(fechaObj.getDate()) + '/'
+  + new Intl.NumberFormat('es-UY', {minimumIntegerDigits: 2}).format((fechaObj.getMonth() + 1)) + '/' + fechaObj.getFullYear()
 
   return fecha
 }
